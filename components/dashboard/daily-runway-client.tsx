@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { LineageDrawer } from "@/components/lineage/lineage-drawer";
-import { RunwayRibbon } from "./runway-ribbon";
 import { Top3FocusCard } from "./top3-focus-card";
 import { HabitHeatStrip } from "./habit-heat-strip";
 import { BacklogQueue } from "./backlog-queue";
@@ -146,21 +145,17 @@ export function DailyRunwayClient({
 
   return (
     <div className="space-y-6">
-      {/* Relational Identity Banner: "Tethered Actions" */}
-      <RunwayRibbon
-        visions={initialVisions}
-        goals={initialGoals}
-        projects={initialProjects}
-      />
-
-      {/* Main Runway Dashboard Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left / Center Column (8 cols): Today's Focus & Daily Habits Tracker */}
-        <div className="lg:col-span-8 space-y-6">
+      {/* Main Runway Dashboard Grid (Directly Matching Brand Sheet Concept Mockup) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
+        {/* Left / Center Column (8 cols): Today's Focus & Weekly Habits Tracker */}
+        <div className="lg:col-span-8 space-y-5 lg:space-y-6">
           <section className="bg-white border border-slate-200/80 rounded-xl p-5 sm:p-6 shadow-2xs space-y-5">
             <Top3FocusCard
               topTasks={data?.focus.topTasks || []}
               stats={data?.stats || { topTasksDone: 0, topTasksTotal: 0 }}
+              visions={initialVisions}
+              goals={initialGoals}
+              projects={initialProjects}
               onToggleTask={handleToggleTask}
               onRemoveTop3={handleRemoveTop3}
               onInspectLineage={(taskId) => setInspectTaskId(taskId)}
@@ -179,7 +174,7 @@ export function DailyRunwayClient({
         </div>
 
         {/* Right Column (4 cols): Daily Habits list + Pace Indicator */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-4 space-y-5 lg:space-y-6">
           <DailyHabitsCard
             habits={data?.habits || []}
             stats={data?.stats || { habitsDone: 0, habitsTotal: 0 }}

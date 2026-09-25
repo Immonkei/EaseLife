@@ -22,6 +22,8 @@ export function DailyHabitsCard({
   stats,
   onToggleHabit,
 }: DailyHabitsCardProps) {
+  const bulletColors = ["bg-[#60D394]", "bg-[#00A896]", "bg-[#F4D35E]", "bg-[#235789]"];
+
   return (
     <section className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs space-y-3">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -33,7 +35,7 @@ export function DailyHabitsCard({
 
       {habits && habits.length > 0 ? (
         <div className="space-y-2">
-          {habits.map((h) => (
+          {habits.map((h, idx) => (
             <div
               key={h.id}
               onClick={() => onToggleHabit(h.id)}
@@ -53,9 +55,17 @@ export function DailyHabitsCard({
                 >
                   {h.completedToday && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                 </div>
-                <span className="text-xs font-medium text-slate-800 truncate">
-                  {h.title}
-                </span>
+
+                <div className="flex items-center gap-2 min-w-0">
+                  <span
+                    className={`w-2 h-2 rounded-xs shrink-0 ${
+                      bulletColors[idx % bulletColors.length]
+                    }`}
+                  />
+                  <span className="text-xs font-medium text-slate-800 truncate">
+                    {h.title}
+                  </span>
+                </div>
               </div>
 
               <span

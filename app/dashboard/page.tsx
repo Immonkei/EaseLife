@@ -20,12 +20,10 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto space-y-8">
-      <DailyRunwayClient
-        initialVisions={visions}
-        initialGoals={goals}
-        initialProjects={projects}
-      />
-    </div>
+    <DailyRunwayClient
+      initialVisions={visions}
+      initialGoals={goals}
+      initialProjects={projects}
+    />
   );
 }

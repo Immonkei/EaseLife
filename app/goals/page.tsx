@@ -2,6 +2,7 @@ import { getUserVisions } from "@/lib/planning/vision-service";
 import { getUserGoals } from "@/lib/planning/goal-service";
 import { Compass, Target, Plus } from "lucide-react";
 import Link from "next/link";
+import { RunwayRibbon } from "@/components/dashboard/runway-ribbon";
 
 interface VisionItem {
   id: string;
@@ -31,7 +32,7 @@ export default async function GoalsPage() {
   } catch {}
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-200/80 pb-5">
         <div>
@@ -51,6 +52,9 @@ export default async function GoalsPage() {
           <span>New Goal</span>
         </Link>
       </div>
+
+      {/* Relational Identity Lineage Ribbon */}
+      <RunwayRibbon visions={visions} goals={goals} projects={[]} />
 
       {/* Visions List */}
       <div className="space-y-4">
