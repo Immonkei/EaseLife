@@ -21,14 +21,14 @@ export default async function TasksPage() {
   } catch {}
 
   return (
-    <div className="p-8 max-w-5xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight flex items-center gap-2">
-          <CheckSquare className="w-6 h-6 text-[var(--primary)]" />
+    <div className="space-y-6">
+      <div className="border-b border-slate-200/80 pb-5">
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+          <CheckSquare className="w-5 h-5 text-[#235789]" />
           All Tasks & Lineage
         </h1>
-        <p className="text-xs text-[var(--foreground-muted)] mt-1">
-          Every task connects upward to a Project or Goal.
+        <p className="text-xs text-slate-500 mt-0.5">
+          Master registry of operational actions connected upward into projects or goals.
         </p>
       </div>
 

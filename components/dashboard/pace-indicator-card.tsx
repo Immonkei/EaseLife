@@ -5,60 +5,59 @@ interface PaceIndicatorCardProps {
 }
 
 export function PaceIndicatorCard({ status = "On Track" }: PaceIndicatorCardProps) {
-  const statusColors = {
+  const statusStyles = {
     "On Track": {
-      bg: "bg-emerald-50/70",
-      border: "border-emerald-200",
-      iconBg: "bg-[#60D394]",
-      textColor: "text-emerald-950",
-      subtextColor: "text-emerald-700",
-      badgeBg: "bg-[#00A896]",
+      badge: "bg-emerald-50 text-emerald-800 border-emerald-200",
+      dot: "bg-[#00A896]",
+      label: "On Track",
+      iconBg: "bg-emerald-50 text-[#00A896]",
     },
     "At Risk": {
-      bg: "bg-amber-50/70",
-      border: "border-amber-200",
-      iconBg: "bg-[#F4D35E]",
-      textColor: "text-amber-950",
-      subtextColor: "text-amber-700",
-      badgeBg: "bg-amber-500",
+      badge: "bg-amber-50 text-amber-800 border-amber-200",
+      dot: "bg-[#F4D35E]",
+      label: "At Risk",
+      iconBg: "bg-amber-50 text-amber-700",
     },
     "Off Track": {
-      bg: "bg-red-50/70",
-      border: "border-red-200",
-      iconBg: "bg-red-500",
-      textColor: "text-red-950",
-      subtextColor: "text-red-700",
-      badgeBg: "bg-red-600",
+      badge: "bg-red-50 text-red-800 border-red-200",
+      dot: "bg-[#EE6352]",
+      label: "Off Track",
+      iconBg: "bg-red-50 text-[#EE6352]",
     },
   }[status];
 
   return (
-    <section className="bg-white border border-[var(--border)] rounded-2xl p-6 shadow-xs space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="font-bold text-sm text-[var(--foreground)]">Pace Indicator</h3>
-        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-          Pace Engine
-        </span>
+    <section className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs space-y-3">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 className="font-semibold text-sm text-slate-900">Pace Engine</h3>
+        <span className="text-[11px] text-slate-400">Runway Velocity</span>
       </div>
 
-      <div className={`p-4 rounded-xl ${statusColors.bg} border ${statusColors.border} flex items-center justify-between`}>
+      <div className="p-3.5 rounded-lg border border-slate-100 bg-slate-50/60 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className={`w-8 h-8 rounded-lg ${statusColors.iconBg} text-white flex items-center justify-center shadow-xs`}>
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${statusStyles.iconBg}`}>
             <Flag className="w-4 h-4" />
           </div>
           <div>
-            <span className={`text-xs font-bold ${statusColors.textColor} block`}>Runway Execution</span>
-            <span className={`text-[11px] ${statusColors.subtextColor}`}>Calculated from atomic work</span>
+            <span className="text-xs font-semibold text-slate-800 block">
+              Execution Momentum
+            </span>
+            <span className="text-[11px] text-slate-400">
+              Weighted actual vs. expected
+            </span>
           </div>
         </div>
 
-        <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusColors.badgeBg} text-white shadow-2xs`}>
-          {status}
+        <span
+          className={`px-2.5 py-1 rounded-md text-xs font-semibold border flex items-center gap-1.5 ${statusStyles.badge}`}
+        >
+          <span className={`w-1.5 h-1.5 rounded-full ${statusStyles.dot}`} />
+          {statusStyles.label}
         </span>
       </div>
 
-      <p className="text-[11px] text-[var(--foreground-muted)] leading-relaxed">
-        Transparent mathematically derived pace: Actual work completed vs. expected timeline progress.
+      <p className="text-[11px] text-slate-500 leading-relaxed">
+        Pace delta is derived from completed task weights against calendar targets without stored state.
       </p>
     </section>
   );

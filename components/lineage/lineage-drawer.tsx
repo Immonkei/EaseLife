@@ -10,7 +10,6 @@ import {
   X,
   Calendar,
   Layers,
-  ArrowRight,
 } from "lucide-react";
 import { LineageResult } from "@/lib/lineage/lineage-service";
 
@@ -55,22 +54,21 @@ export function LineageDrawer({ taskId, onClose }: LineageDrawerProps) {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/30 backdrop-blur-2xs z-40 transition-opacity"
+        className="fixed inset-0 bg-slate-900/25 backdrop-blur-2xs z-40 transition-opacity"
         onClick={onClose}
       />
 
       {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white border-l border-[var(--border)] shadow-2xl z-50 flex flex-col transform transition-transform duration-250 ease-out">
+      <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white border-l border-slate-200/80 shadow-xl z-50 flex flex-col transform transition-transform duration-200 ease-out">
         {/* Header */}
-        <div className="p-5 border-b border-[var(--border)] flex items-center justify-between bg-white">
-          <div>
-            <h3 className="font-bold text-sm text-[var(--foreground)] tracking-tight flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[var(--primary)]" />
-              Visible Lineage Architecture
-            </h3>
-            <p className="text-[11px] text-[var(--foreground-muted)] mt-0.5">
-              Continuous answer: &quot;Why does this matter today?&quot;
-            </p>
+        <div className="h-14 px-5 border-b border-slate-200/80 flex items-center justify-between bg-white shrink-0">
+          <div className="flex items-center gap-2">
+            <Layers className="w-4 h-4 text-[#235789]" />
+            <div>
+              <h3 className="font-semibold text-sm text-slate-900 tracking-tight">
+                Visible Lineage Architecture
+              </h3>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -82,117 +80,117 @@ export function LineageDrawer({ taskId, onClose }: LineageDrawerProps) {
         </div>
 
         {/* Content Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
           {loading && (
-            <div className="flex flex-col items-center justify-center h-64 text-xs text-[var(--foreground-muted)] space-y-2">
-              <div className="w-6 h-6 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
+            <div className="flex flex-col items-center justify-center h-64 text-xs text-slate-500 space-y-3">
+              <div className="w-5 h-5 border-2 border-[#235789] border-t-transparent rounded-full animate-spin" />
               <span>Tracing lineage to Life Vision...</span>
             </div>
           )}
 
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 text-[var(--danger)] text-xs rounded-xl">
+            <div className="p-3.5 bg-red-50 border border-red-200 text-[#EE6352] text-xs rounded-lg">
               {error}
             </div>
           )}
 
           {lineage && (
-            <div className="relative pl-6 space-y-6">
+            <div className="relative pl-7 space-y-5">
               {/* Vertical Spine Line */}
-              <div className="absolute left-[19px] top-4 bottom-6 w-0.5 bg-slate-200 -z-0" />
+              <div className="absolute left-[13px] top-3 bottom-5 w-0.5 bg-slate-200" />
 
               {/* 1. Life Vision */}
-              <div className="relative z-10">
-                <div className="absolute -left-[30px] top-3 w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-xs">
-                  <Compass className="w-3 h-3" />
+              <div className="relative">
+                <div className="absolute -left-[27px] top-2.5 w-6 h-6 rounded-full bg-[#235789] text-white flex items-center justify-center shadow-xs ring-4 ring-white">
+                  <Compass className="w-3.5 h-3.5" />
                 </div>
-                <div className="p-4 bg-blue-50/70 border border-blue-200/80 rounded-xl space-y-1.5">
-                  <div className="flex items-center justify-between text-[11px] font-bold text-blue-900">
-                    <span className="uppercase tracking-wider">Life Vision</span>
+                <div className="p-3.5 bg-white border border-slate-200/80 rounded-lg shadow-2xs space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-600">Life Vision</span>
                     {lineage.domain && (
                       <span
-                        className="px-2 py-0.5 rounded text-[10px] font-semibold text-white shadow-2xs"
+                        className="px-2 py-0.5 rounded text-[10px] font-semibold text-white"
                         style={{ backgroundColor: lineage.domain.color || "#235789" }}
                       >
                         {lineage.domain.name}
                       </span>
                     )}
                   </div>
-                  <h4 className="font-bold text-sm text-blue-950">{lineage.vision.title}</h4>
+                  <h4 className="font-semibold text-sm text-slate-900">{lineage.vision.title}</h4>
                 </div>
               </div>
 
               {/* 2. Strategic Goal */}
-              <div className="relative z-10">
-                <div className="absolute -left-[30px] top-3 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xs">
-                  <Target className="w-3 h-3" />
+              <div className="relative">
+                <div className="absolute -left-[27px] top-2.5 w-6 h-6 rounded-full bg-[#00A896] text-white flex items-center justify-center shadow-xs ring-4 ring-white">
+                  <Target className="w-3.5 h-3.5" />
                 </div>
-                <div className="p-4 bg-emerald-50/70 border border-emerald-200/80 rounded-xl space-y-1.5">
-                  <div className="flex items-center justify-between text-[11px] font-bold text-emerald-900">
-                    <span className="uppercase tracking-wider">Strategic Goal</span>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                <div className="p-3.5 bg-white border border-slate-200/80 rounded-lg shadow-2xs space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-600">Strategic Goal</span>
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-50 text-[#00A896]">
                       {lineage.goal.status}
                     </span>
                   </div>
-                  <h4 className="font-bold text-sm text-emerald-950">{lineage.goal.title}</h4>
+                  <h4 className="font-semibold text-sm text-slate-900">{lineage.goal.title}</h4>
                 </div>
               </div>
 
               {/* 3. Milestone Checkpoint (if exists) */}
               {lineage.milestone && (
-                <div className="relative z-10">
-                  <div className="absolute -left-[30px] top-3 w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-xs">
-                    <Flag className="w-3 h-3" />
+                <div className="relative">
+                  <div className="absolute -left-[27px] top-2.5 w-6 h-6 rounded-full bg-[#F4D35E] text-slate-900 flex items-center justify-center shadow-xs ring-4 ring-white">
+                    <Flag className="w-3.5 h-3.5" />
                   </div>
-                  <div className="p-4 bg-amber-50/70 border border-amber-200/80 rounded-xl space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] font-bold text-amber-900">
-                      <span className="uppercase tracking-wider">Milestone Checkpoint</span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+                  <div className="p-3.5 bg-white border border-slate-200/80 rounded-lg shadow-2xs space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-slate-600">Milestone Checkpoint</span>
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-amber-50 text-amber-800">
                         {lineage.milestone.status}
                       </span>
                     </div>
-                    <h4 className="font-bold text-sm text-amber-950">{lineage.milestone.title}</h4>
+                    <h4 className="font-semibold text-sm text-slate-900">{lineage.milestone.title}</h4>
                   </div>
                 </div>
               )}
 
               {/* 4. Finite Project (if exists) */}
               {lineage.project && (
-                <div className="relative z-10">
-                  <div className="absolute -left-[30px] top-3 w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-xs">
-                    <FolderKanban className="w-3 h-3" />
+                <div className="relative">
+                  <div className="absolute -left-[27px] top-2.5 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-xs ring-4 ring-white">
+                    <FolderKanban className="w-3.5 h-3.5" />
                   </div>
-                  <div className="p-4 bg-indigo-50/70 border border-indigo-200/80 rounded-xl space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] font-bold text-indigo-900">
-                      <span className="uppercase tracking-wider">Finite Project</span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">
+                  <div className="p-3.5 bg-white border border-slate-200/80 rounded-lg shadow-2xs space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-slate-600">Project</span>
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-blue-50 text-blue-700">
                         {lineage.project.status}
                       </span>
                     </div>
-                    <h4 className="font-bold text-sm text-indigo-950">{lineage.project.title}</h4>
+                    <h4 className="font-semibold text-sm text-slate-900">{lineage.project.title}</h4>
                   </div>
                 </div>
               )}
 
               {/* 5. Concrete Executable Task */}
-              <div className="relative z-10">
-                <div className="absolute -left-[30px] top-3 w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-xs">
-                  <CheckSquare className="w-3 h-3" />
+              <div className="relative">
+                <div className="absolute -left-[27px] top-2.5 w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-xs ring-4 ring-white">
+                  <CheckSquare className="w-3.5 h-3.5" />
                 </div>
-                <div className="p-4 bg-slate-100 border border-slate-300 rounded-xl space-y-2">
-                  <div className="flex items-center justify-between text-[11px] font-bold text-slate-700">
-                    <span className="uppercase tracking-wider">Today&apos;s Concrete Action</span>
-                    <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-800 tabular-nums">
+                <div className="p-3.5 bg-slate-50/80 border border-slate-200 rounded-lg shadow-2xs space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-800">Action Task</span>
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-200 text-slate-700 tabular-nums">
                       Weight: {lineage.task.weight}
                     </span>
                   </div>
-                  <h4 className="font-bold text-sm text-slate-950">{lineage.task.title}</h4>
+                  <h4 className="font-semibold text-sm text-slate-900">{lineage.task.title}</h4>
 
-                  <div className="flex items-center gap-3 text-[11px] text-slate-500 pt-1 border-t border-slate-200">
-                    <span>Priority: <strong>{lineage.task.priority}</strong></span>
+                  <div className="flex items-center gap-3 text-[11px] text-slate-500 pt-1.5 border-t border-slate-200/70">
+                    <span>Priority: <strong className="text-slate-700 font-semibold">{lineage.task.priority}</strong></span>
                     {lineage.task.due_date && (
                       <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
+                        <Calendar className="w-3 h-3 text-slate-400" />
                         {lineage.task.due_date}
                       </span>
                     )}
@@ -204,8 +202,8 @@ export function LineageDrawer({ taskId, onClose }: LineageDrawerProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-[var(--border)] bg-slate-50 text-center">
-          <p className="text-[11px] text-[var(--foreground-muted)]">
+        <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/80 text-center shrink-0">
+          <p className="text-[11px] text-slate-500">
             EaseLife Visible Lineage &bull; Every action grounded in direction.
           </p>
         </div>

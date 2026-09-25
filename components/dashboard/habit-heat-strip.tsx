@@ -17,10 +17,10 @@ export function HabitHeatStrip({ habitsDone }: HabitHeatStripProps) {
   ];
 
   return (
-    <div className="pt-4 border-t border-slate-100 space-y-3">
+    <div className="pt-4 border-t border-slate-100 space-y-2.5">
       <div className="flex items-center justify-between text-xs">
-        <span className="font-bold text-[var(--foreground)]">Daily Habits Tracker</span>
-        <span className="text-[11px] text-[var(--foreground-muted)]">Weekly Runway</span>
+        <span className="font-semibold text-slate-800">Weekly Habit Runway</span>
+        <span className="text-[11px] text-slate-400">Current Week</span>
       </div>
 
       {/* Day blocks Sun - Sat */}
@@ -29,30 +29,30 @@ export function HabitHeatStrip({ habitsDone }: HabitHeatStripProps) {
           const isToday = wd.day === currentDayIndex;
           const isPast = wd.day < currentDayIndex;
 
-          let bgColor = "bg-[#EDF2F4]";
-          let textColor = "text-slate-600";
+          let cellClass = "bg-slate-50 border border-slate-100 text-slate-400";
 
           if (isToday) {
-            bgColor = habitsDone > 0 ? "bg-[#60D394]" : "bg-[#F4D35E]";
-            textColor = "text-slate-900 font-bold";
+            cellClass =
+              habitsDone > 0
+                ? "bg-[#60D394] text-white font-semibold shadow-2xs"
+                : "bg-amber-50 border border-amber-200/80 text-amber-800 font-semibold";
           } else if (isPast) {
-            bgColor = "bg-[#60D394]";
-            textColor = "text-slate-800";
+            cellClass = "bg-emerald-50/70 border border-emerald-100 text-[#00A896]";
           }
 
           return (
             <div
               key={wd.name}
-              className="flex flex-col items-center gap-1.5 p-2 rounded-xl border border-slate-100 bg-white"
+              className="flex flex-col items-center gap-1.5 p-2 rounded-lg border border-slate-100 bg-white"
             >
-              <span className="text-[11px] font-semibold text-slate-400">{wd.name}</span>
+              <span className="text-[10px] font-medium text-slate-400">{wd.name}</span>
               <div
-                className={`w-full h-8 rounded-lg flex items-center justify-center transition-all ${bgColor} ${textColor}`}
+                className={`w-full h-7 rounded-md flex items-center justify-center text-xs transition-colors ${cellClass}`}
               >
                 {isToday ? (
-                  <span className="text-[10px] font-bold">Today</span>
+                  <span className="text-[10px]">Today</span>
                 ) : isPast ? (
-                  <Check className="w-3.5 h-3.5 text-slate-800 stroke-[3]" />
+                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                 ) : null}
               </div>
             </div>

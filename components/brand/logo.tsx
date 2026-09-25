@@ -14,7 +14,7 @@ interface LogoProps extends React.SVGProps<SVGSVGElement> {
  * - Momentum Teal: #00A896 (Upward arrow)
  * - Growth Green: #60D394 (Sprout leaf)
  */
-export function EaseLifeIcon({ size = 36, className }: { size?: number; className?: string }) {
+export function EaseLifeIcon({ size = 32, className = "" }: { size?: number; className?: string }) {
   return (
     <svg
       width={size}
@@ -23,7 +23,7 @@ export function EaseLifeIcon({ size = 36, className }: { size?: number; classNam
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      aria-label="EaseLife Logo"
+      aria-label="EaseLife Logo Icon"
     >
       {/* Outer circular 'e' body in North Blue */}
       <circle
@@ -68,21 +68,21 @@ export function EaseLifeIcon({ size = 36, className }: { size?: number; classNam
 }
 
 export function EaseLifeLogo({
-  size = 36,
+  size = 32,
   showText = true,
   showTagline = false,
   className = "",
 }: LogoProps) {
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
+    <div className={`flex items-center gap-2.5 ${className}`}>
       <EaseLifeIcon size={size} className="shrink-0" />
       {showText && (
         <div className="flex flex-col justify-center">
-          <span className="text-xl font-bold tracking-tight text-[#235789] leading-none">
+          <span className="text-[17px] font-bold tracking-tight text-[#235789] leading-none">
             EaseLife
           </span>
           {showTagline && (
-            <span className="text-[10px] text-slate-500 font-medium tracking-tight mt-1 leading-none">
+            <span className="text-[10px] text-slate-400 font-medium tracking-normal mt-1 leading-none">
               Structure Your Vision. Ease Your Days.
             </span>
           )}

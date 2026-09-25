@@ -1,4 +1,4 @@
-import { Sparkles, Check, Network } from "lucide-react";
+import { Sparkles, Check, Network, X } from "lucide-react";
 
 interface TopTaskItem {
   id: string;
@@ -33,24 +33,25 @@ export function Top3FocusCard({
   onInspectLineage,
 }: Top3FocusCardProps) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
+      {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div>
-          <h2 className="font-bold text-base text-[var(--foreground)] flex items-center gap-2">
+          <h2 className="font-semibold text-sm text-slate-900 flex items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-[#F4D35E]" />
             Today&apos;s Focus
           </h2>
-          <p className="text-xs text-[var(--foreground-muted)]">
-            3 main tasks selected for today&apos;s execution runway.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Primary 3 tasks selected for today&apos;s execution runway.
           </p>
         </div>
-        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#EDF2F4] text-[#235789] tabular-nums">
-          {stats.topTasksDone} of {stats.topTasksTotal} Done
+        <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 tabular-nums">
+          {stats.topTasksDone} / {stats.topTasksTotal} Done
         </span>
       </div>
 
-      {/* 3 Main Tasks Slots with circular checkboxes */}
-      <div className="space-y-3">
+      {/* 3 Main Task Slots */}
+      <div className="space-y-2.5">
         {([1, 2, 3] as const).map((pos) => {
           const focusItem = topTasks.find((t) => t.position === pos);
           const task = focusItem?.tasks;
@@ -59,79 +60,80 @@ export function Top3FocusCard({
           return (
             <div
               key={pos}
-              className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-150 ${
+              className={`flex items-center justify-between p-3.5 rounded-lg border transition-colors ${
                 task
                   ? isCompleted
-                    ? "bg-slate-50 border-slate-200 text-slate-400"
-                    : "bg-white border-slate-200 hover:border-slate-300 shadow-2xs"
-                  : "bg-[#EDF2F4]/50 border-dashed border-slate-200 text-slate-400"
+                    ? "bg-slate-50/60 border-slate-200/60 text-slate-400"
+                    : "bg-white border-slate-200/90 hover:border-slate-300 shadow-2xs"
+                  : "bg-slate-50/40 border-dashed border-slate-200 text-slate-400"
               }`}
             >
-              <div className="flex items-center gap-3.5 min-w-0">
-                {/* Circular check button */}
+              <div className="flex items-center gap-3 min-w-0">
+                {/* Circular checkbox */}
                 <button
                   onClick={() => task && onToggleTask(task.id, task.status)}
                   disabled={!task}
-                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                  className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
                     isCompleted
                       ? "bg-[#00A896] border-[#00A896] text-white"
                       : task
                       ? "border-slate-300 hover:border-[#00A896] bg-white"
-                      : "border-slate-200 bg-transparent"
+                      : "border-slate-200 bg-transparent cursor-default"
                   }`}
-                  title={isCompleted ? "Mark incomplete" : "Complete task"}
+                  aria-label={isCompleted ? "Mark incomplete" : "Complete task"}
                 >
-                  {isCompleted && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                  {isCompleted && <Check className="w-3 h-3 stroke-[2.5]" />}
                 </button>
 
                 {task ? (
                   <div className="min-w-0 space-y-0.5">
                     <span
-                      className={`text-sm font-semibold truncate block ${
+                      className={`text-sm font-medium truncate block ${
                         isCompleted
                           ? "line-through text-slate-400"
-                          : "text-[var(--foreground)]"
+                          : "text-slate-800"
                       }`}
                     >
                       {task.title}
                     </span>
-                    <div className="flex items-center gap-2 text-[11px] text-[var(--foreground-muted)]">
+                    <div className="flex items-center gap-2 text-[11px] text-slate-400">
                       {task.projects?.title && (
                         <span className="font-medium text-[#235789]">
-                          Project: {task.projects.title}
+                          {task.projects.title}
                         </span>
                       )}
                       {task.goals?.title && (
                         <span className="font-medium text-[#00A896]">
-                          Goal: {task.goals.title}
+                          {task.goals.title}
                         </span>
                       )}
                       <span>&bull;</span>
-                      <span className="tabular-nums font-semibold">Weight {task.weight}</span>
+                      <span className="tabular-nums">Weight {task.weight}</span>
                     </div>
                   </div>
                 ) : (
-                  <span className="text-xs text-slate-400 italic">
-                    Main task #{pos} slot is open — assign from queue below
+                  <span className="text-xs text-slate-400">
+                    Slot {pos} is open &mdash; assign from queue below
                   </span>
                 )}
               </div>
 
               {task && (
-                <div className="flex items-center gap-2 shrink-0 ml-4">
+                <div className="flex items-center gap-1.5 shrink-0 ml-3">
                   <button
                     onClick={() => onInspectLineage(task.id)}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold text-[#235789] bg-blue-50 hover:bg-blue-100 transition-colors"
+                    className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-[#235789] hover:bg-slate-100 transition-colors"
+                    title="View Lineage"
                   >
-                    <Network className="w-3.5 h-3.5" />
+                    <Network className="w-3 h-3" />
                     <span>Lineage</span>
                   </button>
                   <button
                     onClick={() => onRemoveTop3(pos)}
-                    className="text-slate-400 hover:text-red-500 text-sm p-1 rounded"
-                    title="Remove from Today's Focus"
+                    className="p-1 text-slate-400 hover:text-slate-600 rounded transition-colors"
+                    title="Remove from Focus"
                   >
-                    &times;
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}

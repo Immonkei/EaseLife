@@ -3,34 +3,49 @@
 :root {
   /* Official EaseLife "Pace & Focus" Palette (EaseLife_brand_sheet.jpg) */
   --north-blue: #235789;
-  --momentum-teal: #00A896;
-  --growth-green: #60D394;
-  --insight-amber: #F4D35E;
-  --clarity-gray: #EDF2F4;
+  --north-blue-hover: #1b456e;
+  --north-blue-light: #F0F5FA;
 
-  /* Functional UI mappings */
+  --momentum-teal: #00A896;
+  --momentum-teal-hover: #028e7f;
+  --momentum-teal-light: #E6F7F5;
+
+  --growth-green: #60D394;
+  --growth-green-light: #EEFAF3;
+
+  --insight-amber: #F4D35E;
+  --insight-amber-light: #FEF9E7;
+
+  --clarity-gray: #EDF2F4;
+  --clarity-gray-hover: #E2E8F0;
+
+  /* Functional Semantic UI Mappings */
   --primary: var(--north-blue);
-  --primary-hover: #1b456e;
+  --primary-hover: var(--north-blue-hover);
   --primary-foreground: #FFFFFF;
+  --primary-light: var(--north-blue-light);
 
   --accent: var(--momentum-teal);
-  --accent-hover: #028e7f;
+  --accent-hover: var(--momentum-teal-hover);
   --accent-foreground: #FFFFFF;
+  --accent-light: var(--momentum-teal-light);
 
   --growth: var(--growth-green);
   --insight: var(--insight-amber);
   --danger: #EE6352;
+  --danger-light: #FDF2F1;
 
   --background: #F8FAFC;
   --surface: #FFFFFF;
-  --surface-subtle: var(--clarity-gray);
-  --surface-muted: #E2E8F0;
+  --surface-subtle: #F8FAFC;
+  --surface-muted: #F1F5F9;
 
   --foreground: #0F172A;
   --foreground-muted: #475569;
   --foreground-subtle: #94A3B8;
 
   --border: #E2E8F0;
+  --border-subtle: #F1F5F9;
   --border-strong: #CBD5E1;
   --ring: var(--north-blue);
 }
@@ -45,20 +60,28 @@
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-light: var(--primary-light);
+
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-light: var(--accent-light);
+
   --color-growth: var(--growth);
   --color-insight: var(--insight);
   --color-danger: var(--danger);
+
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-subtle: var(--surface-subtle);
   --color-surface-muted: var(--surface-muted);
+
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
   --color-foreground-subtle: var(--foreground-subtle);
+
   --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
   --color-border-strong: var(--border-strong);
   --color-ring: var(--ring);
 
@@ -72,6 +95,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.011em;
 }
 
 .tabular-nums {
@@ -88,6 +112,7 @@ body {
   outline-offset: 2px;
 }
 
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -104,4 +129,23 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
+}
+
+/* Range slider thumb customization */
+input[type="range"] {
+  accent-color: var(--primary);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
 }

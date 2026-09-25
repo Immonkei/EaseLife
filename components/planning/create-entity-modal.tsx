@@ -75,54 +75,57 @@ export function CreateEntityModal({
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#235789] text-white text-xs font-semibold hover:bg-[#1b456e] transition-colors shadow-2xs"
       >
         <Plus className="w-3.5 h-3.5" />
-        New Item
+        <span>New Item</span>
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-[var(--border)] w-full max-w-lg overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/30 backdrop-blur-2xs p-4">
+          <div className="bg-white rounded-xl shadow-xl border border-slate-200/80 w-full max-w-lg overflow-hidden">
             {/* Modal Header */}
-            <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
-              <h3 className="font-semibold text-sm text-[var(--foreground)]">Create New Life Work</h3>
+            <div className="h-14 px-5 border-b border-slate-200/80 flex items-center justify-between">
+              <h3 className="font-semibold text-sm text-slate-900">Create New Life Work</h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+                aria-label="Close"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Type selector tabs */}
-            <div className="flex border-b border-[var(--border)] bg-[var(--surface-muted)] text-xs font-medium">
-              {(["task", "project", "milestone", "goal", "vision"] as const).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setTab(t)}
-                  className={`flex-1 py-2.5 capitalize transition-colors ${
-                    tab === t
-                      ? "bg-white text-[var(--primary)] border-b-2 border-[var(--primary)] font-semibold"
-                      : "text-slate-500 hover:text-slate-700"
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
+            {/* Type selector tabs as modern segmented control */}
+            <div className="px-5 pt-4">
+              <div className="p-1 bg-slate-100/90 rounded-lg flex gap-1 text-xs">
+                {(["task", "project", "milestone", "goal", "vision"] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setTab(t)}
+                    className={`flex-1 py-1.5 capitalize rounded-md transition-all ${
+                      tab === t
+                        ? "bg-white text-slate-900 font-semibold shadow-2xs"
+                        : "text-slate-500 hover:text-slate-800 font-medium"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-5 space-y-4">
               {error && (
-                <div className="p-3 bg-red-50 text-[var(--danger)] text-xs rounded-md">
+                <div className="p-3 bg-red-50 text-[#EE6352] text-xs rounded-lg border border-red-100">
                   {error}
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-medium text-[var(--foreground-muted)] mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Title
                 </label>
                 <input
@@ -131,19 +134,19 @@ export function CreateEntityModal({
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder={`What is this ${tab} called?`}
-                  className="w-full text-sm border border-[var(--border)] rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                  className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#235789]/20 focus:border-[#235789] transition-all"
                 />
               </div>
 
               {tab === "goal" && (
                 <div>
-                  <label className="block text-xs font-medium text-[var(--foreground-muted)] mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Connects to Life Vision
                   </label>
                   <select
                     value={selectedVisionId}
                     onChange={(e) => setSelectedVisionId(e.target.value)}
-                    className="w-full text-sm border border-[var(--border)] rounded-lg px-3 py-2 bg-white"
+                    className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#235789]/20 focus:border-[#235789] transition-all"
                   >
                     {visions.map((v) => (
                       <option key={v.id} value={v.id}>
@@ -156,13 +159,13 @@ export function CreateEntityModal({
 
               {(tab === "project" || tab === "milestone") && (
                 <div>
-                  <label className="block text-xs font-medium text-[var(--foreground-muted)] mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Connects to Goal
                   </label>
                   <select
                     value={selectedGoalId}
                     onChange={(e) => setSelectedGoalId(e.target.value)}
-                    className="w-full text-sm border border-[var(--border)] rounded-lg px-3 py-2 bg-white"
+                    className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#235789]/20 focus:border-[#235789] transition-all"
                   >
                     {goals.map((g) => (
                       <option key={g.id} value={g.id}>
@@ -176,16 +179,17 @@ export function CreateEntityModal({
               {tab === "task" && (
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-xs font-medium text-[var(--foreground-muted)] mb-1">
-                      Task Assignment (XOR Rule)
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      Task Connection (XOR Constraint)
                     </label>
-                    <div className="flex gap-4 text-xs font-medium mb-2">
+                    <div className="flex gap-4 text-xs font-medium mb-2 text-slate-700">
                       <label className="flex items-center gap-1.5 cursor-pointer">
                         <input
                           type="radio"
                           name="target"
                           checked={taskTarget === "project"}
                           onChange={() => setTaskTarget("project")}
+                          className="accent-[#235789]"
                         />
                         Under Project
                       </label>
@@ -195,6 +199,7 @@ export function CreateEntityModal({
                           name="target"
                           checked={taskTarget === "goal"}
                           onChange={() => setTaskTarget("goal")}
+                          className="accent-[#235789]"
                         />
                         Direct Goal Task
                       </label>
@@ -204,7 +209,7 @@ export function CreateEntityModal({
                       <select
                         value={selectedProjectId}
                         onChange={(e) => setSelectedProjectId(e.target.value)}
-                        className="w-full text-sm border border-[var(--border)] rounded-lg px-3 py-2 bg-white"
+                        className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#235789]/20 focus:border-[#235789] transition-all"
                       >
                         {projects.map((p) => (
                           <option key={p.id} value={p.id}>
@@ -216,7 +221,7 @@ export function CreateEntityModal({
                       <select
                         value={selectedGoalId}
                         onChange={(e) => setSelectedGoalId(e.target.value)}
-                        className="w-full text-sm border border-[var(--border)] rounded-lg px-3 py-2 bg-white"
+                        className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#235789]/20 focus:border-[#235789] transition-all"
                       >
                         {goals.map((g) => (
                           <option key={g.id} value={g.id}>
@@ -229,7 +234,7 @@ export function CreateEntityModal({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-[var(--foreground-muted)] mb-1">
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
                         Task Weight
                       </label>
                       <input
@@ -238,18 +243,18 @@ export function CreateEntityModal({
                         max="10"
                         value={weight}
                         onChange={(e) => setWeight(Number(e.target.value))}
-                        className="w-full text-sm border border-[var(--border)] rounded-lg px-3 py-2"
+                        className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#235789]/20 focus:border-[#235789] transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-[var(--foreground-muted)] mb-1">
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">
                         Due Date
                       </label>
                       <input
                         type="date"
                         value={dueDate}
                         onChange={(e) => setDueDate(e.target.value)}
-                        className="w-full text-sm border border-[var(--border)] rounded-lg px-3 py-2"
+                        className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#235789]/20 focus:border-[#235789] transition-all"
                       />
                     </div>
                   </div>
@@ -257,29 +262,29 @@ export function CreateEntityModal({
               )}
 
               <div>
-                <label className="block text-xs font-medium text-[var(--foreground-muted)] mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Description / Context (optional)
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={2}
-                  className="w-full text-sm border border-[var(--border)] rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                  className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#235789]/20 focus:border-[#235789] transition-all"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="px-3.5 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-4 py-2 text-xs font-semibold text-white bg-[var(--primary)] rounded-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+                  className="px-4 py-1.5 text-xs font-semibold text-white bg-[#235789] hover:bg-[#1b456e] rounded-lg disabled:opacity-50 transition-colors shadow-2xs"
                 >
                   {loading ? "Creating..." : `Create ${tab}`}
                 </button>

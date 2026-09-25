@@ -11,14 +11,14 @@ export default async function DailyReviewPage() {
   } catch {}
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-[var(--foreground)] tracking-tight flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-amber-600" />
-          3-Minute Daily Reflection
-        </h2>
-        <p className="text-xs text-[var(--foreground-muted)] mt-0.5">
-          Calibrate your execution: reflect on your energy, focus, and learnings to plan better tomorrow.
+    <div className="max-w-2xl mx-auto space-y-6">
+      <div className="border-b border-slate-200/80 pb-5">
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-amber-500" />
+          Daily Review Loop
+        </h1>
+        <p className="text-xs text-slate-500 mt-0.5">
+          Calibrate your execution: reflect on physical energy, mental focus, and learnings to iterate tomorrow.
         </p>
       </div>
 
