@@ -19,7 +19,7 @@ export function HabitHeatStrip({ habitsDone }: HabitHeatStripProps) {
   return (
     <div className="pt-4 border-t border-slate-100 space-y-2.5">
       <div className="flex items-center justify-between text-xs">
-        <span className="font-semibold text-slate-800">Weekly Habit Runway</span>
+        <span className="font-semibold text-slate-800">Habits This Week</span>
         <span className="text-[11px] text-slate-400">Current Week</span>
       </div>
 

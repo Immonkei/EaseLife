@@ -1,8 +1,9 @@
 import { getUserVisions } from "@/lib/planning/vision-service";
 import { getUserGoals } from "@/lib/planning/goal-service";
-import { Compass, Target, Plus } from "lucide-react";
-import Link from "next/link";
+import { Compass, Target } from "lucide-react";
 import { RunwayRibbon } from "@/components/dashboard/runway-ribbon";
+
+import { CreateEntityModal } from "@/components/planning/create-entity-modal";
 
 interface VisionItem {
   id: string;
@@ -37,20 +38,19 @@ export default async function GoalsPage() {
       <div className="flex items-center justify-between border-b border-slate-200/80 pb-5">
         <div>
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-            Goals & Life Visions
+            Goals
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Directional outcomes and long-term milestones anchoring daily execution.
+            Set meaningful goals and long-term visions to guide your daily focus.
           </p>
         </div>
 
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#235789] text-white text-xs font-semibold hover:bg-[#1b456e] transition-colors shadow-2xs"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span>New Goal</span>
-        </Link>
+        <CreateEntityModal
+          visions={visions}
+          goals={goals}
+          defaultTab="goal"
+          buttonLabel="+ New Goal"
+        />
       </div>
 
       {/* Relational Identity Lineage Ribbon */}

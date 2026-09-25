@@ -90,7 +90,7 @@ export function LineageDrawer({ taskId, onClose }: LineageDrawerProps) {
             <Layers className="w-4 h-4 text-[#235789]" />
             <div>
               <h3 className="font-semibold text-sm text-slate-900 tracking-tight">
-                Visible Lineage Architecture
+                Goal & Vision Connection
               </h3>
             </div>
           </div>
@@ -108,7 +108,7 @@ export function LineageDrawer({ taskId, onClose }: LineageDrawerProps) {
           {loading && (
             <div className="flex flex-col items-center justify-center h-64 text-xs text-slate-500 space-y-3">
               <div className="w-5 h-5 border-2 border-[#235789] border-t-transparent rounded-full animate-spin" />
-              <span>Tracing lineage to Life Vision...</span>
+              <span>Connecting task to goals...</span>
             </div>
           )}
 

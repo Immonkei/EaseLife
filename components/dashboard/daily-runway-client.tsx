@@ -7,7 +7,7 @@ import { HabitHeatStrip } from "./habit-heat-strip";
 import { BacklogQueue } from "./backlog-queue";
 import { DailyHabitsCard } from "./daily-habits-card";
 import { PaceIndicatorCard } from "./pace-indicator-card";
-import { actionToggleTaskStatus, actionSetDailyFocus, actionRemoveDailyFocus } from "@/actions/execution";
+import { actionToggleTaskStatus, actionSetDailyFocus, actionRemoveDailyFocus, actionCreateTask } from "@/actions/execution";
 import { actionToggleHabit } from "@/actions/habits";
 
 interface RunwayProps {
@@ -143,9 +143,33 @@ export function DailyRunwayClient({
     fetchDashboard();
   };
 
+  const handleQuickAddTask = async (title: string) => {
+    const res = await actionCreateTask({ title, weight: 1 });
+    if (res.data) {
+      const occupiedPositions = new Set(data?.focus.topTasks.map((t) => t.position) || []);
+      let openPos: 1 | 2 | 3 | null = null;
+      if (!occupiedPositions.has(1)) openPos = 1;
+      else if (!occupiedPositions.has(2)) openPos = 2;
+      else if (!occupiedPositions.has(3)) openPos = 3;
+
+      if (openPos) {
+        const today = new Date().toISOString().split("T")[0];
+        await actionSetDailyFocus(today, res.data.id, openPos);
+      }
+    }
+    fetchDashboard();
+  };
+
+  // Determine next open focus slot for backlog starring
+  const occupiedPositions = new Set(data?.focus.topTasks.map((t) => t.position) || []);
+  let nextFocusSlot: 1 | 2 | 3 = 1;
+  if (!occupiedPositions.has(1)) nextFocusSlot = 1;
+  else if (!occupiedPositions.has(2)) nextFocusSlot = 2;
+  else if (!occupiedPositions.has(3)) nextFocusSlot = 3;
+
   return (
     <div className="space-y-6">
-      {/* Main Runway Dashboard Grid (Directly Matching Brand Sheet Concept Mockup) */}
+      {/* Main Dashboard Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
         {/* Left / Center Column (8 cols): Today's Focus & Weekly Habits Tracker */}
         <div className="lg:col-span-8 space-y-5 lg:space-y-6">
@@ -159,33 +183,42 @@ export function DailyRunwayClient({
               onToggleTask={handleToggleTask}
               onRemoveTop3={handleRemoveTop3}
               onInspectLineage={(taskId) => setInspectTaskId(taskId)}
+              onQuickAddTask={handleQuickAddTask}
             />
 
             <HabitHeatStrip habitsDone={data?.stats.habitsDone || 0} />
           </section>
 
-          {/* Runway Backlog Tasks */}
+          {/* Backlog Tasks */}
           <BacklogQueue
             tasks={data?.unfinishedTasks || []}
             onToggleTask={handleToggleTask}
             onSetTop3={handleSetTop3}
             onInspectLineage={(taskId) => setInspectTaskId(taskId)}
+            nextFocusSlot={nextFocusSlot}
           />
         </div>
 
-        {/* Right Column (4 cols): Daily Habits list + Pace Indicator */}
+        {/* Right Column (4 cols): Daily Habits list + Momentum Summary */}
         <div className="lg:col-span-4 space-y-5 lg:space-y-6">
           <DailyHabitsCard
             habits={data?.habits || []}
             stats={data?.stats || { habitsDone: 0, habitsTotal: 0 }}
             onToggleHabit={handleToggleHabit}
+            onHabitCreated={fetchDashboard}
           />
 
-          <PaceIndicatorCard status="On Track" />
+          <PaceIndicatorCard
+            status="On Track"
+            tasksDone={data?.stats.topTasksDone || 0}
+            tasksTotal={data?.stats.topTasksTotal || 0}
+            habitsDone={data?.stats.habitsDone || 0}
+            habitsTotal={data?.stats.habitsTotal || 0}
+          />
         </div>
       </div>
 
-      {/* Visible Lineage Drawer */}
+      {/* Goal Connection Drawer */}
       <LineageDrawer taskId={inspectTaskId} onClose={() => setInspectTaskId(null)} />
     </div>
   );

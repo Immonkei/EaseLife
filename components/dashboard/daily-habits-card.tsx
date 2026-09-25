@@ -1,4 +1,5 @@
 import { Check, Flame } from "lucide-react";
+import { CreateEntityModal } from "@/components/planning/create-entity-modal";
 
 interface HabitItem {
   id: string;
@@ -15,22 +16,27 @@ interface DailyHabitsCardProps {
     habitsTotal: number;
   };
   onToggleHabit: (habitId: string) => void;
+  onHabitCreated?: () => void;
 }
 
 export function DailyHabitsCard({
   habits,
   stats,
   onToggleHabit,
+  onHabitCreated,
 }: DailyHabitsCardProps) {
   const bulletColors = ["bg-[#60D394]", "bg-[#00A896]", "bg-[#F4D35E]", "bg-[#235789]"];
 
   return (
     <section className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs space-y-3">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 className="font-semibold text-sm text-slate-900">Daily Habits</h3>
-        <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 tabular-nums">
-          {stats.habitsDone} / {stats.habitsTotal}
-        </span>
+        <div>
+          <h3 className="font-semibold text-sm text-slate-900">Daily Habits</h3>
+          <p className="text-[11px] text-slate-400 mt-0.5">
+            {stats.habitsDone} of {stats.habitsTotal} completed today
+          </p>
+        </div>
+        <CreateEntityModal defaultTab="habit" buttonLabel="+ Habit" onSuccess={onHabitCreated} />
       </div>
 
       {habits && habits.length > 0 ? (
@@ -84,8 +90,9 @@ export function DailyHabitsCard({
           ))}
         </div>
       ) : (
-        <div className="py-6 text-center text-xs text-slate-400">
-          No habits scheduled for today.
+        <div className="py-6 text-center text-xs text-slate-400 space-y-2">
+          <p>No habits added yet.</p>
+          <CreateEntityModal defaultTab="habit" buttonLabel="Add your first habit" onSuccess={onHabitCreated} />
         </div>
       )}
     </section>

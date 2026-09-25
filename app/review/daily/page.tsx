@@ -15,10 +15,10 @@ export default async function DailyReviewPage() {
       <div className="border-b border-slate-200/80 pb-5">
         <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-amber-500" />
-          Daily Review Loop
+          Daily Review
         </h1>
         <p className="text-xs text-slate-500 mt-0.5">
-          Calibrate your execution: reflect on physical energy, mental focus, and learnings to iterate tomorrow.
+          Take a brief moment to celebrate today&apos;s wins and set up tomorrow for success.
         </p>
       </div>
 

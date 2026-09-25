@@ -1,7 +1,9 @@
 import { getUserProjects } from "@/lib/planning/project-service";
+import { getUserGoals } from "@/lib/planning/goal-service";
 import { FolderKanban, Flag, Target } from "lucide-react";
 import { ProgressResult } from "@/lib/progress/project-progress";
 import { PaceCalculationResult } from "@/lib/progress/pace-engine";
+import { CreateEntityModal } from "@/components/planning/create-entity-modal";
 
 interface ProjectItem {
   id: string;
@@ -17,22 +19,29 @@ interface ProjectItem {
 
 export default async function ProjectsPage() {
   let projects: ProjectItem[] = [];
+  let goals: Array<{ id: string; title: string }> = [];
   try {
     const p = await getUserProjects();
+    const g = await getUserGoals();
     if (p) projects = p as unknown as ProjectItem[];
+    if (g) goals = g;
   } catch {}
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="border-b border-slate-200/80 pb-5">
-        <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-          <FolderKanban className="w-5 h-5 text-[#235789]" />
-          Projects & Pace Engine
-        </h1>
-        <p className="text-xs text-slate-500 mt-0.5">
-          Finite bodies of work tracked with mathematically weighted progress and velocity.
-        </p>
+      <div className="flex items-center justify-between border-b border-slate-200/80 pb-5">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <FolderKanban className="w-5 h-5 text-[#235789]" />
+            Projects
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Track your active projects, milestones, and completion pace.
+          </p>
+        </div>
+
+        <CreateEntityModal goals={goals} defaultTab="project" buttonLabel="+ New Project" />
       </div>
 
       {projects && projects.length > 0 ? (
@@ -108,12 +117,15 @@ export default async function ProjectsPage() {
           })}
         </div>
       ) : (
-        <div className="p-12 bg-white border border-dashed border-slate-200 rounded-xl text-center space-y-2">
+        <div className="p-12 bg-white border border-dashed border-slate-200 rounded-xl text-center space-y-3">
           <FolderKanban className="w-8 h-8 text-slate-300 mx-auto" />
-          <p className="text-xs font-medium text-slate-600">No active projects yet.</p>
-          <p className="text-[11px] text-slate-400">
-            Create a project from the Daily Runway to start tracking progress and pace.
-          </p>
+          <div>
+            <p className="text-xs font-semibold text-slate-700">No active projects yet.</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Projects group tasks together toward larger milestones.
+            </p>
+          </div>
+          <CreateEntityModal goals={goals} defaultTab="project" buttonLabel="Create your first project" />
         </div>
       )}
     </div>

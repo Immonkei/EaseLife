@@ -22,11 +22,11 @@ import { signout } from "@/actions/auth";
 import { EaseLifeLogo } from "@/components/brand/logo";
 
 const navItems = [
-  { href: "/dashboard", label: "Daily Runway", icon: Zap },
-  { href: "/goals", label: "Goals & Visions", icon: Compass },
-  { href: "/projects", label: "Projects", icon: FolderKanban },
+  { href: "/dashboard", label: "Today", icon: Zap },
   { href: "/tasks", label: "Tasks", icon: CheckSquare },
   { href: "/habits", label: "Habits", icon: Repeat },
+  { href: "/projects", label: "Projects", icon: FolderKanban },
+  { href: "/goals", label: "Goals", icon: Compass },
   { href: "/calendar", label: "Calendar", icon: Calendar },
   { href: "/review/daily", label: "Review", icon: BookOpen },
   { href: "/settings", label: "Settings", icon: Settings },
@@ -172,7 +172,7 @@ export function NavShell({ children }: { children: React.ReactNode }) {
               <Menu className="w-5 h-5" />
             </button>
             <h1 className="text-sm font-semibold text-slate-900 tracking-tight">
-              {currentRoute?.href === "/dashboard" ? "Daily Runway" : currentRoute?.label}
+              {currentRoute?.label || "Today"}
             </h1>
           </div>
 

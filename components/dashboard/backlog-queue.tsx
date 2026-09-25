@@ -1,4 +1,6 @@
-import { Network } from "lucide-react";
+"use client";
+
+import { Star, Network } from "lucide-react";
 
 interface QueueTask {
   id: string;
@@ -14,6 +16,7 @@ interface BacklogQueueProps {
   onToggleTask: (taskId: string, currentStatus: string) => void;
   onSetTop3: (taskId: string, position: 1 | 2 | 3) => void;
   onInspectLineage: (taskId: string) => void;
+  nextFocusSlot?: 1 | 2 | 3;
 }
 
 export function BacklogQueue({
@@ -21,13 +24,19 @@ export function BacklogQueue({
   onToggleTask,
   onSetTop3,
   onInspectLineage,
+  nextFocusSlot = 1,
 }: BacklogQueueProps) {
   return (
     <section className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs space-y-3">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 className="font-semibold text-sm text-slate-900">Task Queue</h3>
-        <span className="text-xs text-slate-400">
-          {tasks.length} {tasks.length === 1 ? "task" : "tasks"} ready
+        <div>
+          <h3 className="font-semibold text-sm text-slate-900">Task Backlog</h3>
+          <p className="text-[11px] text-slate-400 mt-0.5">
+            Tasks waiting in line. Star a task to make it one of today&apos;s 3 priorities.
+          </p>
+        </div>
+        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 tabular-nums">
+          {tasks.length}
         </span>
       </div>
 
@@ -36,7 +45,7 @@ export function BacklogQueue({
           {tasks.map((t) => (
             <div
               key={t.id}
-              className="py-2.5 flex items-center justify-between gap-3 group transition-colors hover:bg-slate-50/50 px-1 rounded-md"
+              className="py-2.5 flex items-center justify-between gap-3 group transition-colors hover:bg-slate-50/60 px-1 rounded-md"
             >
               <div className="flex items-center gap-2.5 min-w-0">
                 <button
@@ -44,40 +53,43 @@ export function BacklogQueue({
                   className="w-4.5 h-4.5 rounded-full border border-slate-300 hover:border-[#00A896] hover:bg-teal-50 shrink-0 transition-colors"
                   aria-label={`Mark task ${t.title} as completed`}
                 />
-                <span className="text-xs font-medium text-slate-800 truncate">
-                  {t.title}
-                </span>
+                <div className="min-w-0">
+                  <span className="text-xs font-medium text-slate-800 truncate block">
+                    {t.title}
+                  </span>
+                  {t.projects?.title && (
+                    <span className="text-[10px] text-slate-400">
+                      {t.projects.title}
+                    </span>
+                  )}
+                </div>
               </div>
 
-              <div className="flex items-center gap-2.5 shrink-0">
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
-                  onClick={() => onInspectLineage(t.id)}
-                  className="text-xs text-[#235789] hover:underline flex items-center gap-1 font-medium transition-colors"
+                  onClick={() => onSetTop3(t.id, nextFocusSlot)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-amber-50 hover:bg-amber-100 text-amber-800 transition-colors border border-amber-200/60"
+                  title="Make this a Top Focus task for today"
                 >
-                  <Network className="w-3 h-3" />
-                  <span>Lineage</span>
+                  <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                  <span>Set as Focus</span>
                 </button>
 
-                {/* Make Top 1, 2, 3 assignment buttons */}
-                <div className="flex items-center gap-1 text-[10px] font-medium">
-                  {([1, 2, 3] as const).map((pos) => (
-                    <button
-                      key={pos}
-                      onClick={() => onSetTop3(t.id, pos)}
-                      className="w-5 h-5 rounded bg-slate-100 hover:bg-[#235789] hover:text-white transition-colors text-slate-600 flex items-center justify-center"
-                      title={`Assign to Focus Slot #${pos}`}
-                    >
-                      {pos}
-                    </button>
-                  ))}
-                </div>
+                <button
+                  onClick={() => onInspectLineage(t.id)}
+                  className="p-1.5 text-slate-400 hover:text-[#235789] hover:bg-slate-100 rounded-md transition-colors"
+                  title="View Goal Connection"
+                  aria-label="View Goal Connection"
+                >
+                  <Network className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           ))}
         </div>
       ) : (
         <div className="py-6 text-center text-xs text-slate-400">
-          No pending tasks in queue. All caught up.
+          No pending tasks in queue. You are all caught up!
         </div>
       )}
     </section>
