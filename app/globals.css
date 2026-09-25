@@ -1,22 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand Tokens from EaseLife Architecture (Section 29) */
-  --primary: #235789;
+  /* Official EaseLife "Pace & Focus" Palette (EaseLife_brand_sheet.jpg) */
+  --north-blue: #235789;
+  --momentum-teal: #00A896;
+  --growth-green: #60D394;
+  --insight-amber: #F4D35E;
+  --clarity-gray: #EDF2F4;
+
+  /* Functional UI mappings */
+  --primary: var(--north-blue);
   --primary-hover: #1b456e;
   --primary-foreground: #FFFFFF;
 
-  --accent: #00A896;
+  --accent: var(--momentum-teal);
   --accent-hover: #028e7f;
   --accent-foreground: #FFFFFF;
 
-  --growth: #60D394;
-  --insight: #F4D35E;
+  --growth: var(--growth-green);
+  --insight: var(--insight-amber);
   --danger: #EE6352;
 
   --background: #F8FAFC;
   --surface: #FFFFFF;
-  --surface-subtle: #F1F5F9;
+  --surface-subtle: var(--clarity-gray);
   --surface-muted: #E2E8F0;
 
   --foreground: #0F172A;
@@ -25,10 +32,16 @@
 
   --border: #E2E8F0;
   --border-strong: #CBD5E1;
-  --ring: #235789;
+  --ring: var(--north-blue);
 }
 
 @theme inline {
+  --color-north-blue: var(--north-blue);
+  --color-momentum-teal: var(--momentum-teal);
+  --color-growth-green: var(--growth-green);
+  --color-insight-amber: var(--insight-amber);
+  --color-clarity-gray: var(--clarity-gray);
+
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
@@ -49,11 +62,10 @@
   --color-border-strong: var(--border-strong);
   --color-ring: var(--ring);
 
-  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-geist-sans), "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
 }
 
-/* Base Body & Typography */
 body {
   background-color: var(--background);
   color: var(--foreground);
@@ -62,24 +74,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Numeric & Metric Elements carry tabular-nums */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
 
-/* Custom Text Selection */
 ::selection {
-  background-color: #235789;
+  background-color: var(--north-blue);
   color: #FFFFFF;
 }
 
-/* Accessible & Cohesive Focus Rings */
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
-/* Custom Production Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

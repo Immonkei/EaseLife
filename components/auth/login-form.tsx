@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { EaseLifeLogo } from "@/components/brand/logo";
 
 export function LoginForm({ initialError }: { initialError?: string }) {
   const router = useRouter();
@@ -46,16 +47,11 @@ export function LoginForm({ initialError }: { initialError?: string }) {
 
   return (
     <div className="bg-white border border-[var(--border)] rounded-2xl p-8 max-w-md w-full shadow-sm space-y-6">
-      <div className="text-center space-y-2">
-        <div className="w-10 h-10 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center font-bold text-xl mx-auto">
-          e
-        </div>
-        <h2 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
-          Sign In to EaseLife
+      <div className="flex flex-col items-center text-center space-y-2">
+        <EaseLifeLogo size={44} showTagline={true} />
+        <h2 className="text-xl font-bold text-[#235789] tracking-tight pt-2">
+          Sign In to Your Account
         </h2>
-        <p className="text-xs text-[var(--foreground-muted)]">
-          Structure Your Vision. Ease Your Days.
-        </p>
       </div>
 
       {error && (

@@ -3,16 +3,15 @@
 import { useState, useEffect } from "react";
 import {
   Compass,
-  CheckSquare,
-  Sparkles,
-  Network,
-  Flame,
-  Check,
-  Plus,
-  ArrowRight,
   Target,
   FolderKanban,
+  CheckSquare,
+  Repeat,
+  Sparkles,
+  Network,
+  Check,
   Flag,
+  ArrowRight,
 } from "lucide-react";
 import { LineageDrawer } from "@/components/lineage/lineage-drawer";
 import { CreateEntityModal } from "@/components/planning/create-entity-modal";
@@ -94,7 +93,6 @@ export function DailyRunwayClient({
   }, []);
 
   const handleToggleTask = async (taskId: string, currentStatus: string) => {
-    // Optimistic local update
     setData((prev) => {
       if (!prev) return prev;
       const nextStatus = currentStatus === "COMPLETED" ? "TODO" : "COMPLETED";
@@ -119,7 +117,6 @@ export function DailyRunwayClient({
   };
 
   const handleToggleHabit = async (habitId: string) => {
-    // Optimistic toggle
     setData((prev) => {
       if (!prev) return prev;
       return {
@@ -154,74 +151,85 @@ export function DailyRunwayClient({
     fetchDashboard();
   };
 
-  return (
-    <div className="space-y-8">
-      {/* 1. North Star / Direction Anchor */}
-      <section className="bg-white border border-[var(--border)] rounded-2xl p-6 shadow-xs relative overflow-hidden">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-blue-50 text-[var(--primary)] shrink-0">
-              <Compass className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                  Long-Term Direction
-                </span>
-                {data?.focus.northStar?.life_domains && (
-                  <span
-                    className="px-2 py-0.5 rounded text-[10px] font-semibold text-white shadow-2xs"
-                    style={{
-                      backgroundColor:
-                        data.focus.northStar.life_domains.color || "#235789",
-                    }}
-                  >
-                    {data.focus.northStar.life_domains.name}
-                  </span>
-                )}
-              </div>
-              <h2 className="text-xl md:text-2xl font-bold text-[var(--foreground)] tracking-tight">
-                {data?.focus.northStar?.title || "Define your foundational Life Vision"}
-              </h2>
-              <p className="text-xs text-[var(--foreground-muted)] max-w-xl">
-                Every task on your runway exists to advance this long-term vision. Visible lineage makes that connection transparent.
-              </p>
-            </div>
-          </div>
+  // Week days for Habit Tracker bar from mockup (Sun, Mon, Tue, Wed, Thu, Fri, Sat)
+  const currentDayIndex = new Date().getDay(); // 0 = Sun, 1 = Mon ...
+  const weekDays = [
+    { name: "Sun", day: 0 },
+    { name: "Mon", day: 1 },
+    { name: "Tue", day: 2 },
+    { name: "Wed", day: 3 },
+    { name: "Thu", day: 4 },
+    { name: "Fri", day: 5 },
+    { name: "Sat", day: 6 },
+  ];
 
-          <div className="flex items-center gap-2 shrink-0">
-            <CreateEntityModal
-              visions={initialVisions}
-              goals={initialGoals}
-              projects={initialProjects}
-            />
+  return (
+    <div className="space-y-6">
+      {/* Relational Identity Banner: "Tethered Actions" (Direct from Brand Sheet) */}
+      <section className="bg-white border border-[var(--border)] rounded-2xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            Relational Identity &bull; Lineage Architecture
           </div>
+          <div className="flex items-center gap-2 mt-2 text-xs font-bold text-[#235789] overflow-x-auto py-1">
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-[#235789] shrink-0">
+              <Compass className="w-3.5 h-3.5" />
+              Vision
+            </span>
+            <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-[#00A896] shrink-0">
+              <Target className="w-3.5 h-3.5" />
+              Goal
+            </span>
+            <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 shrink-0">
+              <FolderKanban className="w-3.5 h-3.5" />
+              Project
+            </span>
+            <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 shrink-0">
+              <CheckSquare className="w-3.5 h-3.5" />
+              Task
+            </span>
+            <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-50 text-[#00A896] shrink-0">
+              <Repeat className="w-3.5 h-3.5" />
+              Habit
+            </span>
+          </div>
+        </div>
+
+        <div className="shrink-0 flex items-center gap-3">
+          <CreateEntityModal
+            visions={initialVisions}
+            goals={initialGoals}
+            projects={initialProjects}
+          />
         </div>
       </section>
 
-      {/* 2. Main Execution Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column (8 cols): Today's Top 3 & Queue */}
-        <div className="lg:col-span-8 space-y-8">
-          {/* Today's Top 3 Runway */}
+      {/* Main Runway Dashboard Grid (Direct from Concept Mockup) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left / Center Column (8 cols): Today's Focus & Daily Habits Tracker */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Today's Focus Card */}
           <section className="bg-white border border-[var(--border)] rounded-2xl p-6 shadow-xs space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <h3 className="font-bold text-base text-[var(--foreground)] flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-500" />
-                  Today&apos;s Top 3 Priorities
-                </h3>
-                <p className="text-xs text-[var(--foreground-muted)] mt-0.5">
-                  The three non-negotiables that move your direction forward today.
+                <h2 className="font-bold text-base text-[var(--foreground)] flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-[#F4D35E]" />
+                  Today&apos;s Focus
+                </h2>
+                <p className="text-xs text-[var(--foreground-muted)]">
+                  3 main tasks selected for today&apos;s execution runway.
                 </p>
               </div>
-
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 tabular-nums">
+              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#EDF2F4] text-[#235789] tabular-nums">
                 {data?.stats.topTasksDone || 0} of {data?.stats.topTasksTotal || 0} Done
               </span>
             </div>
 
-            {/* Position 1, 2, 3 Runway Slots */}
+            {/* 3 Main Tasks Slots with circular checkboxes as in brand sheet mockup */}
             <div className="space-y-3">
               {([1, 2, 3] as const).map((pos) => {
                 const focusItem = data?.focus.topTasks.find((t) => t.position === pos);
@@ -231,73 +239,61 @@ export function DailyRunwayClient({
                 return (
                   <div
                     key={pos}
-                    className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${
+                    className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-150 ${
                       task
                         ? isCompleted
-                          ? "bg-slate-50/80 border-slate-200 text-slate-400"
+                          ? "bg-slate-50 border-slate-200 text-slate-400"
                           : "bg-white border-slate-200 hover:border-slate-300 shadow-2xs"
-                        : "bg-slate-50/50 border-dashed border-slate-200 text-slate-400"
+                        : "bg-[#EDF2F4]/50 border-dashed border-slate-200 text-slate-400"
                     }`}
                   >
                     <div className="flex items-center gap-3.5 min-w-0">
-                      <span
-                        className={`w-7 h-7 rounded-lg font-bold text-xs flex items-center justify-center shrink-0 tabular-nums ${
+                      {/* Circular check button matching mockup */}
+                      <button
+                        onClick={() => task && handleToggleTask(task.id, task.status)}
+                        disabled={!task}
+                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
                           isCompleted
-                            ? "bg-emerald-100 text-emerald-800"
+                            ? "bg-[#00A896] border-[#00A896] text-white"
                             : task
-                            ? "bg-slate-900 text-white"
-                            : "bg-slate-200 text-slate-500"
+                            ? "border-slate-300 hover:border-[#00A896] bg-white"
+                            : "border-slate-200 bg-transparent"
                         }`}
+                        title={isCompleted ? "Mark incomplete" : "Complete task"}
                       >
-                        {pos}
-                      </span>
+                        {isCompleted && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                      </button>
 
                       {task ? (
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2.5">
-                            <button
-                              onClick={() => handleToggleTask(task.id, task.status)}
-                              className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
-                                isCompleted
-                                  ? "bg-[var(--growth)] border-[var(--growth)] text-white"
-                                  : "border-slate-300 hover:border-[var(--primary)] hover:bg-slate-50"
-                              }`}
-                              title={isCompleted ? "Mark incomplete" : "Mark completed"}
-                            >
-                              {isCompleted && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                            </button>
-                            <span
-                              className={`text-sm font-semibold truncate ${
-                                isCompleted
-                                  ? "line-through text-slate-400"
-                                  : "text-[var(--foreground)]"
-                              }`}
-                            >
-                              {task.title}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-2 text-[11px] text-[var(--foreground-muted)] pl-7 pt-1">
+                        <div className="min-w-0 space-y-0.5">
+                          <span
+                            className={`text-sm font-semibold truncate block ${
+                              isCompleted
+                                ? "line-through text-slate-400"
+                                : "text-[var(--foreground)]"
+                            }`}
+                          >
+                            {task.title}
+                          </span>
+                          <div className="flex items-center gap-2 text-[11px] text-[var(--foreground-muted)]">
                             {task.projects?.title && (
-                              <span className="flex items-center gap-1 font-medium text-indigo-700">
-                                <FolderKanban className="w-3 h-3" />
-                                {task.projects.title}
+                              <span className="font-medium text-[#235789]">
+                                Project: {task.projects.title}
                               </span>
                             )}
                             {task.goals?.title && (
-                              <span className="flex items-center gap-1 font-medium text-emerald-700">
-                                <Target className="w-3 h-3" />
-                                {task.goals.title}
+                              <span className="font-medium text-[#00A896]">
+                                Goal: {task.goals.title}
                               </span>
                             )}
                             <span>&bull;</span>
-                            <span className="font-semibold tabular-nums">Weight {task.weight}</span>
+                            <span className="tabular-nums font-semibold">Weight {task.weight}</span>
                           </div>
                         </div>
                       ) : (
-                        <div className="text-xs text-slate-400 italic">
-                          Slot {pos} is open — select a task below to prioritize today.
-                        </div>
+                        <span className="text-xs text-slate-400 italic">
+                          Main task #{pos} slot is open — assign from queue below
+                        </span>
                       )}
                     </div>
 
@@ -305,16 +301,15 @@ export function DailyRunwayClient({
                       <div className="flex items-center gap-2 shrink-0 ml-4">
                         <button
                           onClick={() => setInspectTaskId(task.id)}
-                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold text-[var(--primary)] bg-blue-50 hover:bg-blue-100 transition-colors"
-                          title="Inspect Lineage"
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold text-[#235789] bg-blue-50 hover:bg-blue-100 transition-colors"
                         >
                           <Network className="w-3.5 h-3.5" />
-                          <span className="hidden sm:inline">Lineage</span>
+                          <span>Lineage</span>
                         </button>
                         <button
                           onClick={() => handleRemoveTop3(pos)}
-                          className="text-slate-400 hover:text-red-500 text-sm p-1 rounded hover:bg-slate-100"
-                          title="Remove from Top 3"
+                          className="text-slate-400 hover:text-red-500 text-sm p-1 rounded"
+                          title="Remove from Today's Focus"
                         >
                           &times;
                         </button>
@@ -324,67 +319,84 @@ export function DailyRunwayClient({
                 );
               })}
             </div>
-          </section>
 
-          {/* Queue & Backlog */}
-          <section className="bg-white border border-[var(--border)] rounded-2xl p-6 shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div>
-                <h3 className="font-bold text-sm text-[var(--foreground)]">Runway Task Queue</h3>
-                <p className="text-xs text-[var(--foreground-muted)]">
-                  Actionable work ready to be scheduled or completed.
-                </p>
+            {/* Daily Habits Tracker Heat-Strip (Direct from Mockup) */}
+            <div className="pt-4 border-t border-slate-100 space-y-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-[var(--foreground)]">Daily Habits Tracker</span>
+                <span className="text-[11px] text-[var(--foreground-muted)]">Weekly Runway</span>
+              </div>
+
+              {/* Day blocks Sun - Sat */}
+              <div className="grid grid-cols-7 gap-2">
+                {weekDays.map((wd) => {
+                  const isToday = wd.day === currentDayIndex;
+                  const isPast = wd.day < currentDayIndex;
+
+                  let bgColor = "bg-[#EDF2F4]";
+                  let textColor = "text-slate-600";
+
+                  if (isToday) {
+                    bgColor = data?.stats.habitsDone && data.stats.habitsDone > 0 ? "bg-[#60D394]" : "bg-[#F4D35E]";
+                    textColor = "text-slate-900 font-bold";
+                  } else if (isPast) {
+                    bgColor = "bg-[#60D394]";
+                    textColor = "text-slate-800";
+                  }
+
+                  return (
+                    <div
+                      key={wd.name}
+                      className="flex flex-col items-center gap-1.5 p-2 rounded-xl border border-slate-100 bg-white"
+                    >
+                      <span className="text-[11px] font-semibold text-slate-400">{wd.name}</span>
+                      <div
+                        className={`w-full h-8 rounded-lg flex items-center justify-center transition-all ${bgColor} ${textColor}`}
+                      >
+                        {isToday ? (
+                          <span className="text-[10px] font-bold">Today</span>
+                        ) : isPast ? (
+                          <Check className="w-3.5 h-3.5 text-slate-800 stroke-[3]" />
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
+          </section>
 
+          {/* Runway Backlog Tasks */}
+          <section className="bg-white border border-[var(--border)] rounded-2xl p-6 shadow-xs space-y-4">
+            <h3 className="font-bold text-sm text-[var(--foreground)]">Queue & Available Tasks</h3>
             {data?.unfinishedTasks && data.unfinishedTasks.length > 0 ? (
               <div className="divide-y divide-slate-100">
                 {data.unfinishedTasks.map((t) => (
-                  <div
-                    key={t.id}
-                    className="py-3 flex items-center justify-between gap-4 group"
-                  >
+                  <div key={t.id} className="py-2.5 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
                       <button
                         onClick={() => handleToggleTask(t.id, t.status)}
-                        className="w-4 h-4 rounded border border-slate-300 hover:border-[var(--primary)] hover:bg-slate-100 transition-colors shrink-0"
-                        title="Mark complete"
+                        className="w-5 h-5 rounded-full border border-slate-300 hover:border-[#00A896] shrink-0"
                       />
-                      <div className="min-w-0">
-                        <span className="text-sm font-medium text-[var(--foreground)] block truncate">
-                          {t.title}
-                        </span>
-                        <div className="flex items-center gap-2 text-[10px] text-[var(--foreground-muted)]">
-                          {t.projects?.title ? (
-                            <span>Project: {t.projects.title}</span>
-                          ) : t.goals?.title ? (
-                            <span>Goal: {t.goals.title}</span>
-                          ) : (
-                            <span>Direct</span>
-                          )}
-                          <span>&bull;</span>
-                          <span className="tabular-nums">Weight {t.weight}</span>
-                        </div>
-                      </div>
+                      <span className="text-sm font-medium text-slate-800 truncate">{t.title}</span>
                     </div>
 
                     <div className="flex items-center gap-3 shrink-0">
                       <button
                         onClick={() => setInspectTaskId(t.id)}
-                        className="text-xs text-[var(--primary)] hover:underline flex items-center gap-1 font-semibold"
+                        className="text-xs text-[#235789] hover:underline flex items-center gap-1 font-semibold"
                       >
-                        <Network className="w-3.5 h-3.5" />
-                        <span className="hidden sm:inline">Lineage</span>
+                        <Network className="w-3 h-3" />
+                        Lineage
                       </button>
 
-                      {/* Set as Top 1, 2, or 3 buttons */}
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 text-[10px] font-bold">
                         {([1, 2, 3] as const).map((pos) => (
                           <button
                             key={pos}
                             onClick={() => handleSetTop3(t.id, pos)}
-                            className="w-5 h-5 rounded bg-slate-100 hover:bg-[var(--primary)] hover:text-white text-[10px] font-bold text-slate-600 transition-colors tabular-nums"
-                            title={`Assign to Today's #${pos}`}
+                            className="w-5 h-5 rounded bg-[#EDF2F4] hover:bg-[#235789] hover:text-white transition-colors text-slate-700"
+                            title={`Make Top ${pos}`}
                           >
                             {pos}
                           </button>
@@ -395,29 +407,18 @@ export function DailyRunwayClient({
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 space-y-2">
-                <CheckSquare className="w-8 h-8 text-slate-300 mx-auto" />
-                <p className="text-xs text-slate-500 font-medium">No pending tasks in queue.</p>
-                <p className="text-[11px] text-slate-400">
-                  Use the quick create button above to define your next concrete action.
-                </p>
-              </div>
+              <p className="text-xs text-slate-400">No pending tasks in queue.</p>
             )}
           </section>
         </div>
 
-        {/* Right Column (4 cols): Recurring Habits & Metrics */}
-        <div className="lg:col-span-4 space-y-8">
-          {/* Recurring Habits Section */}
+        {/* Right Column (4 cols): Daily Habits list + Pace Indicator (Mockup matching) */}
+        <div className="lg:col-span-4 space-y-6">
+          {/* Daily Habits List */}
           <section className="bg-white border border-[var(--border)] rounded-2xl p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div>
-                <h3 className="font-bold text-sm text-[var(--foreground)]">Daily Habits</h3>
-                <p className="text-[11px] text-[var(--foreground-muted)]">
-                  Recurring behaviors supporting goals.
-                </p>
-              </div>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 tabular-nums">
+              <h3 className="font-bold text-sm text-[var(--foreground)]">Daily Habits</h3>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#EDF2F4] text-[#235789] tabular-nums">
                 {data?.stats.habitsDone || 0}/{data?.stats.habitsTotal || 0}
               </span>
             </div>
@@ -428,71 +429,69 @@ export function DailyRunwayClient({
                   <div
                     key={h.id}
                     onClick={() => handleToggleHabit(h.id)}
-                    className={`p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-all duration-150 ${
+                    className={`p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-colors ${
                       h.completedToday
                         ? "bg-emerald-50/70 border-emerald-200"
-                        : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
+                        : "bg-white border-slate-200 hover:border-slate-300"
                     }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5">
                       <div
-                        className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${
+                        className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
                           h.completedToday
-                            ? "bg-[var(--accent)] border-[var(--accent)] text-white"
-                            : "border-slate-300 bg-white"
+                            ? "bg-[#00A896] border-[#00A896] text-white"
+                            : "border-slate-300"
                         }`}
                       >
-                        {h.completedToday && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                        {h.completedToday && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                       </div>
-                      <span
-                        className={`text-xs font-semibold ${
-                          h.completedToday ? "text-emerald-950 font-bold" : "text-[var(--foreground)]"
-                        }`}
-                      >
-                        {h.title}
-                      </span>
+                      <span className="text-xs font-semibold text-slate-800">{h.title}</span>
                     </div>
 
-                    <div className="flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full tabular-nums">
-                      <Flame className="w-3 h-3 fill-amber-500 text-amber-500" />
-                      <span>{h.currentStreak}d</span>
-                    </div>
+                    <span className="text-[11px] font-bold text-[#00A896] bg-teal-50 px-2 py-0.5 rounded tabular-nums">
+                      {h.currentStreak}d streak
+                    </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-6 space-y-1">
-                <p className="text-xs text-slate-500">No habits scheduled for today.</p>
-                <p className="text-[11px] text-slate-400">
-                  Habits turn high-level vision into sustainable automatic momentum.
-                </p>
-              </div>
+              <p className="text-xs text-slate-400">No active habits scheduled.</p>
             )}
           </section>
 
-          {/* Quick Calibration / Reflection Callout */}
-          <section className="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 shadow-xs space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Evening Calibration
-            </h4>
-            <p className="text-sm font-semibold text-slate-100">
-              Ready to close today&apos;s loop?
+          {/* Pace Indicator Card (Direct from Brand Sheet Mockup) */}
+          <section className="bg-white border border-[var(--border)] rounded-2xl p-6 shadow-xs space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-sm text-[var(--foreground)]">Pace Indicator</h3>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Pace Engine
+              </span>
+            </div>
+
+            <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-[#60D394] text-white flex items-center justify-center shadow-xs">
+                  <Flag className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-emerald-950 block">Runway Execution</span>
+                  <span className="text-[11px] text-emerald-700">Calculated from atomic work</span>
+                </div>
+              </div>
+
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#00A896] text-white shadow-2xs">
+                On Track
+              </span>
+            </div>
+
+            <p className="text-[11px] text-[var(--foreground-muted)] leading-relaxed">
+              Transparent mathematically derived pace: Actual work completed vs. expected timeline progress.
             </p>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Execution without reflection is aimless. Spend 3 minutes logging your energy, focus, and learnings.
-            </p>
-            <a
-              href="/review/daily"
-              className="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 hover:text-emerald-300 pt-1"
-            >
-              <span>Begin 3-min Reflection</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
           </section>
         </div>
       </div>
 
-      {/* 3. Visible Lineage Flyout Drawer */}
+      {/* Visible Lineage Drawer */}
       <LineageDrawer taskId={inspectTaskId} onClose={() => setInspectTaskId(null)} />
     </div>
   );
