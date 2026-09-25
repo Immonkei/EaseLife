@@ -19,33 +19,57 @@ interface LineageDrawerProps {
 }
 
 export function LineageDrawer({ taskId, onClose }: LineageDrawerProps) {
-  const [loading, setLoading] = useState(false);
-  const [lineage, setLineage] = useState<LineageResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<{
+    forTaskId: string | null;
+    lineage: LineageResult | null;
+    error: string | null;
+  }>({
+    forTaskId: null,
+    lineage: null,
+    error: null,
+  });
+
+  const loading = Boolean(taskId && data.forTaskId !== taskId);
+  const lineage = data.forTaskId === taskId ? data.lineage : null;
+  const error = data.forTaskId === taskId ? data.error : null;
 
   useEffect(() => {
-    if (!taskId) {
-      setLineage(null);
-      return;
-    }
+    if (!taskId) return;
 
-    setLoading(true);
-    setError(null);
+    let ignore = false;
 
     fetch(`/api/tasks/${taskId}/lineage`)
       .then((res) => {
         if (!res.ok) throw new Error("Could not resolve lineage");
         return res.json();
       })
-      .then((data) => setLineage(data))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+      .then((resData) => {
+        if (!ignore) {
+          setData({
+            forTaskId: taskId,
+            lineage: resData,
+            error: null,
+          });
+        }
+      })
+      .catch((err) => {
+        if (!ignore) {
+          setData({
+            forTaskId: taskId,
+            lineage: null,
+            error: err.message,
+          });
+        }
+      });
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      ignore = true;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [taskId, onClose]);
 
   if (!taskId) return null;

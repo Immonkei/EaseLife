@@ -1,4 +1,4 @@
-import { Sparkles, Check, Network, X, Plus } from "lucide-react";
+import { Sparkles, Check, Network, X } from "lucide-react";
 import { CreateEntityModal } from "@/components/planning/create-entity-modal";
 
 interface TopTaskItem {

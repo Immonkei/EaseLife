@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Compass, Target, Flag, FolderKanban, CheckSquare, ArrowRight, Repeat } from "lucide-react";
+import { Compass, Target, Flag, FolderKanban, CheckSquare, ArrowRight } from "lucide-react";
 import { EaseLifeLogo } from "@/components/brand/logo";
 
 export default function Home() {
