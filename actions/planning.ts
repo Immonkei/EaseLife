@@ -11,71 +11,73 @@ import {
   createMilestoneSchema,
   createProjectSchema,
 } from "@/lib/validation/schemas";
+import { ActionResult, actionSuccess, actionError } from "@/types/actions";
+import { Vision, Goal, Milestone, Project } from "@/types/domain";
 
-export async function actionCreateVision(rawData: unknown) {
+export async function actionCreateVision(rawData: unknown): Promise<ActionResult<Vision>> {
   const parsed = createVisionSchema.safeParse(rawData);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message || "Invalid input" };
+    return actionError(parsed.error.issues[0]?.message || "Invalid input");
   }
 
   try {
     const vision = await createVision(parsed.data);
     revalidatePath("/dashboard");
     revalidatePath("/goals");
-    return { data: vision };
+    return actionSuccess(vision as unknown as Vision);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to create vision";
-    return { error: message };
+    return actionError(message);
   }
 }
 
-export async function actionCreateGoal(rawData: unknown) {
+export async function actionCreateGoal(rawData: unknown): Promise<ActionResult<Goal>> {
   const parsed = createGoalSchema.safeParse(rawData);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message || "Invalid input" };
+    return actionError(parsed.error.issues[0]?.message || "Invalid input");
   }
 
   try {
     const goal = await createGoal(parsed.data);
     revalidatePath("/dashboard");
     revalidatePath("/goals");
-    return { data: goal };
+    return actionSuccess(goal as unknown as Goal);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to create goal";
-    return { error: message };
+    return actionError(message);
   }
 }
 
-export async function actionCreateMilestone(rawData: unknown) {
+export async function actionCreateMilestone(rawData: unknown): Promise<ActionResult<Milestone>> {
   const parsed = createMilestoneSchema.safeParse(rawData);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message || "Invalid input" };
+    return actionError(parsed.error.issues[0]?.message || "Invalid input");
   }
 
   try {
     const milestone = await createMilestone(parsed.data);
     revalidatePath("/projects");
     revalidatePath("/goals");
-    return { data: milestone };
+    return actionSuccess(milestone as unknown as Milestone);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to create milestone";
-    return { error: message };
+    return actionError(message);
   }
 }
 
-export async function actionCreateProject(rawData: unknown) {
+export async function actionCreateProject(rawData: unknown): Promise<ActionResult<Project>> {
   const parsed = createProjectSchema.safeParse(rawData);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message || "Invalid input" };
+    return actionError(parsed.error.issues[0]?.message || "Invalid input");
   }
 
   try {
     const project = await createProject(parsed.data);
     revalidatePath("/dashboard");
     revalidatePath("/projects");
-    return { data: project };
+    return actionSuccess(project as unknown as Project);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to create project";
-    return { error: message };
+    return actionError(message);
   }
 }

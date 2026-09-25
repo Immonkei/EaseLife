@@ -4,11 +4,13 @@ import { revalidatePath } from "next/cache";
 import { createTask, updateTaskStatus } from "@/lib/execution/task-service";
 import { setDailyFocusTask, removeDailyFocusTask } from "@/lib/execution/focus-service";
 import { createTaskSchema } from "@/lib/validation/schemas";
+import { ActionResult, actionSuccess, actionError } from "@/types/actions";
+import { Task, DailyFocusTask } from "@/types/domain";
 
-export async function actionCreateTask(rawData: unknown) {
+export async function actionCreateTask(rawData: unknown): Promise<ActionResult<Task>> {
   const parsed = createTaskSchema.safeParse(rawData);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message || "Invalid input" };
+    return actionError(parsed.error.issues[0]?.message || "Invalid input");
   }
 
   try {
@@ -16,14 +18,14 @@ export async function actionCreateTask(rawData: unknown) {
     revalidatePath("/dashboard");
     revalidatePath("/tasks");
     revalidatePath("/projects");
-    return { data: task };
+    return actionSuccess(task as unknown as Task);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to create task";
-    return { error: message };
+    return actionError(message);
   }
 }
 
-export async function actionToggleTaskStatus(taskId: string, currentStatus: string) {
+export async function actionToggleTaskStatus(taskId: string, currentStatus: string): Promise<ActionResult<Task>> {
   const nextStatus = currentStatus === "COMPLETED" ? "TODO" : "COMPLETED";
 
   try {
@@ -31,31 +33,38 @@ export async function actionToggleTaskStatus(taskId: string, currentStatus: stri
     revalidatePath("/dashboard");
     revalidatePath("/tasks");
     revalidatePath("/projects");
-    return { data: task };
+    return actionSuccess(task as unknown as Task);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to toggle task";
-    return { error: message };
+    return actionError(message);
   }
 }
 
-export async function actionSetDailyFocus(dateStr: string, taskId: string, position: 1 | 2 | 3) {
+export async function actionSetDailyFocus(
+  dateStr: string,
+  taskId: string,
+  position: 1 | 2 | 3
+): Promise<ActionResult<DailyFocusTask>> {
   try {
     const focus = await setDailyFocusTask(dateStr, taskId, position);
     revalidatePath("/dashboard");
-    return { data: focus };
+    return actionSuccess(focus as unknown as DailyFocusTask);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to set focus";
-    return { error: message };
+    return actionError(message);
   }
 }
 
-export async function actionRemoveDailyFocus(dateStr: string, position: 1 | 2 | 3) {
+export async function actionRemoveDailyFocus(
+  dateStr: string,
+  position: 1 | 2 | 3
+): Promise<ActionResult<void>> {
   try {
     await removeDailyFocusTask(dateStr, position);
     revalidatePath("/dashboard");
-    return { success: true };
+    return actionSuccess(undefined);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to remove focus";
-    return { error: message };
+    return actionError(message);
   }
 }
