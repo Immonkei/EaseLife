@@ -89,11 +89,13 @@ describe("Habit Streak Engine (Section 13)", () => {
     expect(res.completedToday).toBe(false);
   });
 
-  it("resets streak to 0 if missed yesterday", () => {
+  it("resets streak to 0 if missed yesterday but calculates consistency rate", () => {
     const completions = ["2026-09-20", "2026-09-21"];
     const res = calculateHabitStreak(completions, "2026-09-26");
     expect(res.currentStreak).toBe(0);
     expect(res.longestStreak).toBe(2);
+    expect(typeof res.consistencyRate).toBe("number");
+    expect(res.consistencyRate).toBeGreaterThanOrEqual(0);
   });
 });
 
@@ -108,7 +110,7 @@ describe("Habit Frequency Engine (Section 14)", () => {
   });
 });
 
-describe("Task Ownership XOR Rule (Section 9)", () => {
+describe("Calm Purposeful Alignment Task Schema (Option C)", () => {
   const dummyUUID1 = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
   const dummyUUID2 = "b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22";
 
@@ -130,22 +132,20 @@ describe("Task Ownership XOR Rule (Section 9)", () => {
     expect(result.success).toBe(true);
   });
 
-  it("rejects task with both project_id and goal_id", () => {
+  it("accepts standalone task with neither project_id nor goal_id", () => {
     const result = createTaskSchema.safeParse({
-      title: "Contradictory task",
-      project_id: dummyUUID1,
-      goal_id: dummyUUID2,
-    });
-    expect(result.success).toBe(false);
-  });
-
-  it("rejects task with neither project_id nor goal_id", () => {
-    const result = createTaskSchema.safeParse({
-      title: "Orphan task",
+      title: "Standalone daily action",
       project_id: null,
       goal_id: null,
     });
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts task with minimal input (just title)", () => {
+    const result = createTaskSchema.safeParse({
+      title: "Buy groceries",
+    });
+    expect(result.success).toBe(true);
   });
 });
 

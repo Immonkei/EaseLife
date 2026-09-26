@@ -9,42 +9,41 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="max-w-3xl space-y-6">
-      <div className="border-b border-slate-200/80 pb-5">
-        <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-          <Settings className="w-5 h-5 text-slate-700" />
-          Settings & Life Domains
+    <div className="max-w-2xl space-y-6">
+      <div className="border-b border-black/[0.06] pb-4">
+        <h1 className="text-base font-semibold text-zinc-900 tracking-tight">
+          Settings & Themes
         </h1>
-        <p className="text-xs text-slate-500 mt-0.5">
-          Manage system domains, database connection, and operational environment.
+        <p className="text-xs text-zinc-500 mt-0.5">
+          System domains, database status, and operational preferences.
         </p>
       </div>
 
       {/* Life Domains Configuration */}
-      <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+      <div className="bg-white border border-black/[0.06] rounded-xl p-4 sm:p-5 space-y-3.5">
+        <div className="flex items-center gap-2 border-b border-black/[0.04] pb-2.5">
           <Layers className="w-4 h-4 text-[#235789]" />
-          <h3 className="font-semibold text-sm text-slate-900">Life Domains</h3>
+          <h3 className="font-medium text-xs text-zinc-900 uppercase tracking-wide">Themes & Domains</h3>
         </div>
 
-        <p className="text-xs text-slate-500">
-          Domains categorize high-level visions, strategic goals, and projects.
+        <p className="text-xs text-zinc-500">
+          Domains provide optional context for your long-term focus.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
           {domains.map((dom) => (
             <div
               key={dom.name}
-              className="p-3.5 rounded-lg border border-slate-200/80 bg-white space-y-1 hover:border-slate-300 transition-colors"
+              className="p-3 rounded-lg border border-black/[0.06] bg-zinc-50/50 space-y-1 hover:border-black/[0.12] transition-colors"
             >
               <div className="flex items-center gap-2">
                 <span
-                  className="w-2.5 h-2.5 rounded-full shrink-0"
+                  className="w-2 h-2 rounded-full shrink-0"
                   style={{ backgroundColor: dom.color }}
                 />
-                <span className="text-xs font-semibold text-slate-800">{dom.name}</span>
+                <span className="text-xs font-medium text-zinc-800">{dom.name}</span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-normal pl-4.5">
+              <p className="text-[11px] text-zinc-400 leading-normal pl-4">
                 {dom.desc}
               </p>
             </div>
@@ -53,29 +52,29 @@ export default function SettingsPage() {
       </div>
 
       {/* Backend & Security */}
-      <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+      <div className="bg-white border border-black/[0.06] rounded-xl p-4 sm:p-5 space-y-3.5">
+        <div className="flex items-center gap-2 border-b border-black/[0.04] pb-2.5">
           <Database className="w-4 h-4 text-[#00A896]" />
-          <h3 className="font-semibold text-sm text-slate-900">Database & Security</h3>
+          <h3 className="font-medium text-xs text-zinc-900 uppercase tracking-wide">Database & Security</h3>
         </div>
 
-        <div className="space-y-3 text-xs">
-          <div className="flex items-center justify-between py-2 border-b border-slate-100">
-            <span className="text-slate-600">Cloud Architecture</span>
-            <span className="font-medium text-slate-900">Option A: Hosted Supabase Cloud</span>
+        <div className="space-y-2.5 text-xs">
+          <div className="flex items-center justify-between py-1.5 border-b border-black/[0.04]">
+            <span className="text-zinc-500">Cloud Architecture</span>
+            <span className="font-normal text-zinc-800">Hosted Supabase Cloud</span>
           </div>
 
-          <div className="flex items-center justify-between py-2 border-b border-slate-100">
-            <span className="text-slate-600">Row Level Security (RLS)</span>
-            <span className="inline-flex items-center gap-1 font-medium text-[#00A896]">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              Active on all 15 tables
+          <div className="flex items-center justify-between py-1.5 border-b border-black/[0.04]">
+            <span className="text-zinc-500">Row Level Security (RLS)</span>
+            <span className="inline-flex items-center gap-1 font-normal text-zinc-800">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              Active on all tables
             </span>
           </div>
 
-          <div className="flex items-center justify-between py-2">
-            <span className="text-slate-600">Task XOR Ownership Constraint</span>
-            <span className="font-medium text-slate-900">Enforced by Postgres CHECK</span>
+          <div className="flex items-center justify-between py-1.5">
+            <span className="text-zinc-500">Ownership Constraint</span>
+            <span className="font-normal text-zinc-800">Postgres XOR Enforced</span>
           </div>
         </div>
       </div>

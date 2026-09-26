@@ -7,6 +7,7 @@ export interface LineageResult {
     status: string;
     priority: string;
     weight: number;
+    section?: string | null;
     due_date: string | null;
   };
   project?: {
@@ -19,20 +20,27 @@ export interface LineageResult {
     title: string;
     status: string;
   } | null;
-  goal: {
+  goal?: {
     id: string;
     title: string;
     status: string;
-  };
-  vision: {
+  } | null;
+  theme?: {
+    id: string;
+    name: string;
+    color: string;
+    vision_statement?: string | null;
+  } | null;
+  vision?: {
     id: string;
     title: string;
-  };
+  } | null;
   domain?: {
     id: string;
     name: string;
     color: string;
   } | null;
+  isStandalone?: boolean;
 }
 
 interface RawTaskRow {
@@ -45,6 +53,7 @@ interface RawTaskRow {
   status: string;
   priority: string;
   weight: number;
+  section: string | null;
   due_date: string | null;
 }
 
@@ -52,20 +61,14 @@ interface RawProjectRow {
   id: string;
   title: string;
   status: string;
-  goal_id: string;
+  goal_id: string | null;
   milestone_id: string | null;
 }
 
-interface RawMilestoneRow {
-  id: string;
-  title: string;
-  status: string;
-}
-
 /**
- * Resolves the full vertical lineage for a task:
- * Task -> Project (optional) -> Milestone (optional) -> Goal -> Vision -> Domain
- * Following Architecture Section 17.
+ * Resolves the "Why / Purpose Context" for a task:
+ * Task -> Project (if any) -> Goal (if any) -> Life Theme / Vision (if any)
+ * Option C: Unblocks standalone tasks and gracefully renders partial or direct connections.
  */
 export async function getTaskLineage(taskId: string): Promise<LineageResult | null> {
   const supabase = await createClient();
@@ -87,7 +90,7 @@ export async function getTaskLineage(taskId: string): Promise<LineageResult | nu
   let projectData: LineageResult["project"] = null;
   let milestoneData: LineageResult["milestone"] = null;
 
-  // 2. If Project Task, fetch Project and optional Milestone
+  // 2. If Project Task, fetch Project
   if (task.project_id) {
     const { data: rawProject } = await supabase
       .from("projects")
@@ -102,40 +105,47 @@ export async function getTaskLineage(taskId: string): Promise<LineageResult | nu
         title: project.title,
         status: project.status,
       };
-      goalId = project.goal_id;
-
-      if (project.milestone_id) {
-        const { data: rawMilestone } = await supabase
-          .from("milestones")
-          .select("id, title, status")
-          .eq("id", project.milestone_id)
-          .single();
-
-        if (rawMilestone) {
-          const milestone = rawMilestone as unknown as RawMilestoneRow;
-          milestoneData = {
-            id: milestone.id,
-            title: milestone.title,
-            status: milestone.status,
-          };
-        }
+      if (project.goal_id) {
+        goalId = project.goal_id;
       }
     }
   }
 
+  // 3. If no Goal connected, return task context as standalone / project-only
   if (!goalId) {
-    return null;
+    return {
+      task: {
+        id: task.id,
+        title: task.title,
+        status: task.status,
+        priority: task.priority,
+        weight: task.weight || 1,
+        section: task.section,
+        due_date: task.due_date,
+      },
+      project: projectData,
+      goal: null,
+      vision: null,
+      domain: null,
+      isStandalone: !projectData,
+    };
   }
 
-  // 3. Fetch Goal, Vision, and Domain
+  // 4. Fetch Goal with theme/vision info
   const { data: rawGoal } = await supabase
     .from("goals")
     .select(`
       id,
       title,
       status,
-      domain_id,
+      theme_id,
       vision_id,
+      life_themes (
+        id,
+        name,
+        color,
+        vision_statement
+      ),
       visions (
         id,
         title,
@@ -151,23 +161,60 @@ export async function getTaskLineage(taskId: string): Promise<LineageResult | nu
     .single();
 
   if (!rawGoal) {
-    return null;
+    return {
+      task: {
+        id: task.id,
+        title: task.title,
+        status: task.status,
+        priority: task.priority,
+        weight: task.weight || 1,
+        section: task.section,
+        due_date: task.due_date,
+      },
+      project: projectData,
+      goal: null,
+      vision: null,
+      domain: null,
+      isStandalone: false,
+    };
   }
 
   const goal = rawGoal as unknown as {
     id: string;
     title: string;
     status: string;
-    visions: {
+    life_themes?: { id: string; name: string; color: string; vision_statement?: string | null } | null;
+    visions?: {
       id: string;
       title: string;
       life_domains?: { id: string; name: string; color: string } | null;
     } | null;
   };
 
-  if (!goal.visions) {
-    return null;
-  }
+  const themeData = goal.life_themes
+    ? {
+        id: goal.life_themes.id,
+        name: goal.life_themes.name,
+        color: goal.life_themes.color,
+        vision_statement: goal.life_themes.vision_statement,
+      }
+    : null;
+
+  const domainData = themeData
+    ? { id: themeData.id, name: themeData.name, color: themeData.color }
+    : goal.visions?.life_domains
+    ? {
+        id: goal.visions.life_domains.id,
+        name: goal.visions.life_domains.name,
+        color: goal.visions.life_domains.color,
+      }
+    : null;
+
+  const visionData = goal.visions
+    ? { id: goal.visions.id, title: goal.visions.title }
+    : themeData?.vision_statement
+    ? { id: themeData.id, title: themeData.vision_statement }
+    : null;
 
   return {
     task: {
@@ -175,7 +222,8 @@ export async function getTaskLineage(taskId: string): Promise<LineageResult | nu
       title: task.title,
       status: task.status,
       priority: task.priority,
-      weight: task.weight,
+      weight: task.weight || 1,
+      section: task.section,
       due_date: task.due_date,
     },
     project: projectData,
@@ -185,16 +233,9 @@ export async function getTaskLineage(taskId: string): Promise<LineageResult | nu
       title: goal.title,
       status: goal.status,
     },
-    vision: {
-      id: goal.visions.id,
-      title: goal.visions.title,
-    },
-    domain: goal.visions.life_domains
-      ? {
-          id: goal.visions.life_domains.id,
-          name: goal.visions.life_domains.name,
-          color: goal.visions.life_domains.color,
-        }
-      : null,
+    theme: themeData,
+    vision: visionData,
+    domain: domainData,
+    isStandalone: false,
   };
 }

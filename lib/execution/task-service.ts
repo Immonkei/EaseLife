@@ -37,16 +37,9 @@ export async function createTask(input: {
   description?: string | null;
   priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
   weight?: number;
+  section?: string | null;
   due_date?: string | null;
 }) {
-  // Enforce XOR rule at service layer
-  const hasProject = !!input.project_id;
-  const hasGoal = !!input.goal_id;
-
-  if ((hasProject && hasGoal) || (!hasProject && !hasGoal)) {
-    throw new Error("Task must be assigned to either a Project or a Goal, never both.");
-  }
-
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -62,6 +55,7 @@ export async function createTask(input: {
       description: input.description || null,
       priority: input.priority || "MEDIUM",
       weight: input.weight || 1,
+      section: input.section || null,
       due_date: input.due_date || null,
       status: "TODO",
     })

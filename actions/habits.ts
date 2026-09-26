@@ -11,6 +11,7 @@ export async function actionToggleHabit(habitId: string, dateStr?: string): Prom
     const res = await toggleHabitCompletion(habitId, dateStr);
     revalidatePath("/dashboard");
     revalidatePath("/habits");
+    revalidatePath("/horizons");
     return actionSuccess(res);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to toggle habit";
@@ -28,6 +29,7 @@ export async function actionCreateHabit(rawData: unknown): Promise<ActionResult<
     const habit = await createHabit(parsed.data);
     revalidatePath("/dashboard");
     revalidatePath("/habits");
+    revalidatePath("/horizons");
     return actionSuccess(habit as unknown as Habit);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to create habit";

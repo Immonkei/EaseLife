@@ -1,93 +1,75 @@
 import React from "react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-interface LogoProps extends React.SVGProps<SVGSVGElement> {
+export interface LogoProps {
   size?: number;
+  height?: number;
+  width?: number;
   showText?: boolean;
   showTagline?: boolean;
   className?: string;
+  priority?: boolean;
 }
 
 /**
- * Official EaseLife Logo
- * Extracted from EaseLife_brand_sheet.jpg
- * - North Blue: #235789 (Outer circle 'e')
- * - Momentum Teal: #00A896 (Upward arrow)
- * - Growth Green: #60D394 (Sprout leaf)
+ * Official EaseLife Logo Icon (Mark Only)
+ * Sourced from /EaseLife-icon.webp (extracted from EaseLife-logo.webp)
  */
-export function EaseLifeIcon({ size = 32, className = "" }: { size?: number; className?: string }) {
+export function EaseLifeIcon({
+  size = 32,
+  className = "",
+}: {
+  size?: number;
+  className?: string;
+}) {
+  const iconHeight = size;
+  const iconWidth = Math.round(size * (514 / 463));
+
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-label="EaseLife Logo Icon"
-    >
-      {/* Outer circular 'e' body in North Blue */}
-      <circle
-        cx="50"
-        cy="50"
-        r="40"
-        stroke="#235789"
-        strokeWidth="11"
-        strokeLinecap="round"
-        strokeDasharray="210 50"
-        transform="rotate(-40 50 50)"
-      />
-
-      {/* Crossbar of 'e' */}
-      <path
-        d="M20 50H56"
-        stroke="#235789"
-        strokeWidth="10"
-        strokeLinecap="round"
-      />
-
-      {/* Momentum Teal Upward Diagonal Arrow */}
-      <path
-        d="M32 76C42 76 54 66 66 52L82 34"
-        stroke="#00A896"
-        strokeWidth="10"
-        strokeLinecap="round"
-      />
-      {/* Arrowhead */}
-      <path
-        d="M66 26H86V46L76 36L66 26Z"
-        fill="#00A896"
-      />
-
-      {/* Growth Green Sprout Leaf */}
-      <path
-        d="M52 46C52 32 64 22 72 20C72 32 62 44 52 46Z"
-        fill="#60D394"
-      />
-    </svg>
+    <Image
+      src="/EaseLife-icon.webp"
+      alt="EaseLife Icon"
+      width={iconWidth}
+      height={iconHeight}
+      className={cn("object-contain shrink-0", className)}
+      style={{ height: `${iconHeight}px`, width: "auto" }}
+      priority
+    />
   );
 }
 
+/**
+ * Official EaseLife Brand Logo
+ * Sourced from /EaseLife-logo.webp
+ * Dimensions: 2169 x 725 (~2.99:1 aspect ratio)
+ */
 export function EaseLifeLogo({
   size = 32,
+  height,
+  width,
   showText = true,
-  showTagline = false,
   className = "",
+  priority = true,
 }: LogoProps) {
+  if (!showText) {
+    return <EaseLifeIcon size={size} className={className} />;
+  }
+
+  const logoHeight = height || size || 32;
+  const logoWidth = width || Math.round(logoHeight * (2169 / 725));
+
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
-      <EaseLifeIcon size={size} className="shrink-0" />
-      {showText && (
-        <div className="flex flex-col justify-center">
-          <span className="text-[17px] font-bold tracking-tight text-[#235789] leading-none">
-            EaseLife
-          </span>
-          {showTagline && (
-            <span className="text-[10px] text-slate-400 font-medium tracking-normal mt-1 leading-none">
-              Structure Your Vision. Ease Your Days.
-            </span>
-          )}
-        </div>
-      )}
+    <div className={cn("inline-flex items-center select-none", className)}>
+      <Image
+        src="/EaseLife-logo.webp"
+        alt="EaseLife — Structure Your Vision. Ease Your Days."
+        width={logoWidth}
+        height={logoHeight}
+        priority={priority}
+        className="object-contain"
+        style={{ height: `${logoHeight}px`, width: "auto" }}
+      />
     </div>
   );
 }

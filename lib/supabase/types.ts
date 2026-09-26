@@ -96,43 +96,91 @@ export interface Database {
         };
         Relationships: [];
       };
-      goals: {
+      life_themes: {
         Row: {
           id: string;
           user_id: string;
-          vision_id: string;
-          domain_id: string | null;
-          parent_goal_id: string | null;
-          title: string;
-          description: string | null;
-          status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD' | 'ABANDONED';
-          target_date: string | null;
+          name: string;
+          vision_statement: string | null;
+          color: string;
+          icon: string | null;
+          position: number;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
           user_id: string;
-          vision_id: string;
-          domain_id?: string | null;
-          parent_goal_id?: string | null;
-          title: string;
-          description?: string | null;
-          status?: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD' | 'ABANDONED';
-          target_date?: string | null;
+          name: string;
+          vision_statement?: string | null;
+          color?: string;
+          icon?: string | null;
+          position?: number;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
           user_id?: string;
-          vision_id?: string;
+          name?: string;
+          vision_statement?: string | null;
+          color?: string;
+          icon?: string | null;
+          position?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      goals: {
+        Row: {
+          id: string;
+          user_id: string;
+          theme_id: string | null;
+          vision_id: string | null;
+          domain_id: string | null;
+          parent_goal_id: string | null;
+          title: string;
+          description: string | null;
+          status: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD' | 'ABANDONED';
+          target_date: string | null;
+          metric_target: number | null;
+          metric_current: number | null;
+          metric_unit: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          theme_id?: string | null;
+          vision_id?: string | null;
+          domain_id?: string | null;
+          parent_goal_id?: string | null;
+          title: string;
+          description?: string | null;
+          status?: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD' | 'ABANDONED';
+          target_date?: string | null;
+          metric_target?: number | null;
+          metric_current?: number | null;
+          metric_unit?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          theme_id?: string | null;
+          vision_id?: string | null;
           domain_id?: string | null;
           parent_goal_id?: string | null;
           title?: string;
           description?: string | null;
           status?: 'NOT_STARTED' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD' | 'ABANDONED';
           target_date?: string | null;
+          metric_target?: number | null;
+          metric_current?: number | null;
+          metric_unit?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -214,7 +262,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          goal_id: string;
+          goal_id: string | null;
           milestone_id: string | null;
           title: string;
           description: string | null;
@@ -228,7 +276,7 @@ export interface Database {
         Insert: {
           id?: string;
           user_id: string;
-          goal_id: string;
+          goal_id?: string | null;
           milestone_id?: string | null;
           title: string;
           description?: string | null;
@@ -242,7 +290,7 @@ export interface Database {
         Update: {
           id?: string;
           user_id?: string;
-          goal_id?: string;
+          goal_id?: string | null;
           milestone_id?: string | null;
           title?: string;
           description?: string | null;
@@ -266,6 +314,10 @@ export interface Database {
           status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
           priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
           weight: number;
+          section: string | null;
+          is_focus: boolean;
+          focus_date: string | null;
+          focus_position: number | null;
           due_date: string | null;
           completed_at: string | null;
           created_at: string;
@@ -281,6 +333,10 @@ export interface Database {
           status?: 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
           priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
           weight?: number;
+          section?: string | null;
+          is_focus?: boolean;
+          focus_date?: string | null;
+          focus_position?: number | null;
           due_date?: string | null;
           completed_at?: string | null;
           created_at?: string;
@@ -296,6 +352,10 @@ export interface Database {
           status?: 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
           priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
           weight?: number;
+          section?: string | null;
+          is_focus?: boolean;
+          focus_date?: string | null;
+          focus_position?: number | null;
           due_date?: string | null;
           completed_at?: string | null;
           created_at?: string;
@@ -307,6 +367,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
+          goal_id: string | null;
           title: string;
           description: string | null;
           frequency: Json;
@@ -317,6 +378,7 @@ export interface Database {
         Insert: {
           id?: string;
           user_id: string;
+          goal_id?: string | null;
           title: string;
           description?: string | null;
           frequency?: Json;
@@ -327,6 +389,7 @@ export interface Database {
         Update: {
           id?: string;
           user_id?: string;
+          goal_id?: string | null;
           title?: string;
           description?: string | null;
           frequency?: Json;

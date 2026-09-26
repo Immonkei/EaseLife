@@ -11,6 +11,7 @@ import { actionToggleTaskStatus, actionSetDailyFocus, actionRemoveDailyFocus, ac
 import { actionToggleHabit } from "@/actions/habits";
 
 interface RunwayProps {
+  initialThemes?: Array<{ id: string; name: string; color?: string }>;
   initialVisions: Array<{ id: string; title: string }>;
   initialGoals: Array<{ id: string; title: string }>;
   initialProjects: Array<{ id: string; title: string }>;
@@ -61,6 +62,7 @@ interface DashboardData {
 }
 
 export function DailyRunwayClient({
+  initialThemes,
   initialVisions,
   initialGoals,
   initialProjects,
@@ -173,10 +175,11 @@ export function DailyRunwayClient({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
         {/* Left / Center Column (8 cols): Today's Focus & Weekly Habits Tracker */}
         <div className="lg:col-span-8 space-y-5 lg:space-y-6">
-          <section className="bg-white border border-slate-200/80 rounded-xl p-5 sm:p-6 shadow-2xs space-y-5">
+          <section className="bg-white border border-black/[0.06] rounded-xl p-5 sm:p-6 space-y-6">
             <Top3FocusCard
               topTasks={data?.focus.topTasks || []}
               stats={data?.stats || { topTasksDone: 0, topTasksTotal: 0 }}
+              themes={initialThemes}
               visions={initialVisions}
               goals={initialGoals}
               projects={initialProjects}

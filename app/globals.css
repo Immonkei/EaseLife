@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  /* Official EaseLife "Pace & Focus" Palette (EaseLife_brand_sheet.jpg) */
+  /* EaseLife Minimalist Palette */
   --north-blue: #235789;
   --north-blue-hover: #1b456e;
   --north-blue-light: #F0F5FA;
@@ -11,19 +11,18 @@
   --momentum-teal-light: #E6F7F5;
 
   --growth-green: #60D394;
-  --growth-green-light: #EEFAF3;
-
   --insight-amber: #F4D35E;
-  --insight-amber-light: #FEF9E7;
-
-  --clarity-gray: #EDF2F4;
-  --clarity-gray-hover: #E2E8F0;
 
   /* Functional Semantic UI Mappings */
   --primary: var(--north-blue);
   --primary-hover: var(--north-blue-hover);
   --primary-foreground: #FFFFFF;
   --primary-light: var(--north-blue-light);
+
+  --secondary: var(--momentum-teal);
+  --secondary-hover: var(--momentum-teal-hover);
+  --secondary-foreground: #FFFFFF;
+  --secondary-light: var(--momentum-teal-light);
 
   --accent: var(--momentum-teal);
   --accent-hover: var(--momentum-teal-hover);
@@ -35,18 +34,19 @@
   --danger: #EE6352;
   --danger-light: #FDF2F1;
 
-  --background: #F8FAFC;
+  /* Minimalist Canvas & Neutral Tokens */
+  --background: #FAFAFA;
   --surface: #FFFFFF;
-  --surface-subtle: #F8FAFC;
-  --surface-muted: #F1F5F9;
+  --surface-subtle: #F4F4F5;
+  --surface-muted: #E4E4E7;
 
-  --foreground: #0F172A;
-  --foreground-muted: #475569;
-  --foreground-subtle: #94A3B8;
+  --foreground: #18181B;
+  --foreground-muted: #71717A;
+  --foreground-subtle: #A1A1AA;
 
-  --border: #E2E8F0;
-  --border-subtle: #F1F5F9;
-  --border-strong: #CBD5E1;
+  --border: rgba(0, 0, 0, 0.07);
+  --border-subtle: rgba(0, 0, 0, 0.04);
+  --border-strong: rgba(0, 0, 0, 0.12);
   --ring: var(--north-blue);
 }
 
@@ -55,12 +55,16 @@
   --color-momentum-teal: var(--momentum-teal);
   --color-growth-green: var(--growth-green);
   --color-insight-amber: var(--insight-amber);
-  --color-clarity-gray: var(--clarity-gray);
 
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-light: var(--primary-light);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-light: var(--secondary-light);
 
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
@@ -85,7 +89,7 @@
   --color-border-strong: var(--border-strong);
   --color-ring: var(--ring);
 
-  --font-sans: var(--font-geist-sans), "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-geist-sans), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
 }
 
@@ -95,7 +99,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  letter-spacing: -0.011em;
+  letter-spacing: -0.012em;
 }
 
 .tabular-nums {
@@ -103,8 +107,8 @@ body {
 }
 
 ::selection {
-  background-color: var(--north-blue);
-  color: #FFFFFF;
+  background-color: #E4E4E7;
+  color: #18181B;
 }
 
 :focus-visible {
@@ -112,10 +116,10 @@ body {
   outline-offset: 2px;
 }
 
-/* Custom Scrollbar */
+/* Minimalist Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -123,12 +127,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: rgba(0, 0, 0, 0.12);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: rgba(0, 0, 0, 0.22);
 }
 
 /* Range slider thumb customization */
@@ -137,15 +141,15 @@ input[type="range"] {
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: var(--primary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  background: #18181B;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.1s ease;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }

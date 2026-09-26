@@ -4,6 +4,8 @@ export interface HabitStreakResult {
   currentStreak: number;
   longestStreak: number;
   completedToday: boolean;
+  consistencyRate: number;      // e.g. 85 (%) in the last 14 days
+  completedLast7Days: number;   // e.g. 5
 }
 
 function parseYMD(dateStr: string): Date {
@@ -12,8 +14,8 @@ function parseYMD(dateStr: string): Date {
 }
 
 /**
- * Calculates habit streaks derived purely from completion history dates.
- * Architecture Section 13: Stored streak counters are forbidden as source of truth.
+ * Calculates habit consistency and streaks derived purely from completion history dates.
+ * Option C: Prioritizes rolling consistency (e.g. 5/7 days, 85%) over guilt-inducing binary streaks.
  */
 export function calculateHabitStreak(
   completionDates: string[], // Format: 'YYYY-MM-DD'
@@ -24,6 +26,8 @@ export function calculateHabitStreak(
       currentStreak: 0,
       longestStreak: 0,
       completedToday: false,
+      consistencyRate: 0,
+      completedLast7Days: 0,
     };
   }
 
@@ -89,9 +93,28 @@ export function calculateHabitStreak(
     }
   }
 
+  // Calculate rolling 14-day consistency rate
+  let completedLast14Days = 0;
+  let completedLast7Days = 0;
+
+  for (let i = 0; i < 14; i++) {
+    const checkD = subDays(todayMidday, i);
+    const dStr = `${checkD.getFullYear()}-${String(checkD.getMonth() + 1).padStart(2, "0")}-${String(checkD.getDate()).padStart(2, "0")}`;
+    if (uniqueDates.includes(dStr)) {
+      completedLast14Days++;
+      if (i < 7) {
+        completedLast7Days++;
+      }
+    }
+  }
+
+  const consistencyRate = Math.round((completedLast14Days / 14) * 100);
+
   return {
     currentStreak,
     longestStreak,
     completedToday,
+    consistencyRate,
+    completedLast7Days,
   };
 }

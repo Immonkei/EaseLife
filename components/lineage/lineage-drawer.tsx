@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import {
-  Compass,
+  Sparkles,
   Target,
-  Flag,
   FolderKanban,
   CheckSquare,
   X,
   Calendar,
-  Layers,
+  Compass,
+  Zap,
 } from "lucide-react";
 import { LineageResult } from "@/lib/lineage/lineage-service";
 
@@ -40,7 +40,7 @@ export function LineageDrawer({ taskId, onClose }: LineageDrawerProps) {
 
     fetch(`/api/tasks/${taskId}/lineage`)
       .then((res) => {
-        if (!res.ok) throw new Error("Could not resolve lineage");
+        if (!res.ok) throw new Error("Could not resolve context");
         return res.json();
       })
       .then((resData) => {
@@ -74,161 +74,165 @@ export function LineageDrawer({ taskId, onClose }: LineageDrawerProps) {
 
   if (!taskId) return null;
 
+  const hasHigherContext = Boolean(lineage?.theme || lineage?.vision || lineage?.goal || lineage?.project);
+
   return (
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/25 backdrop-blur-2xs z-40 transition-opacity"
+        className="fixed inset-0 bg-black/20 backdrop-blur-2xs z-40 transition-opacity"
         onClick={onClose}
       />
 
       {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white border-l border-slate-200/80 shadow-xl z-50 flex flex-col transform transition-transform duration-200 ease-out">
+      <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white border-l border-black/[0.06] shadow-xl z-50 flex flex-col transform transition-transform duration-200 ease-out">
         {/* Header */}
-        <div className="h-14 px-5 border-b border-slate-200/80 flex items-center justify-between bg-white shrink-0">
+        <div className="h-14 px-6 border-b border-black/[0.05] flex items-center justify-between bg-white shrink-0">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-[#235789]" />
-            <div>
-              <h3 className="font-semibold text-sm text-slate-900 tracking-tight">
-                Goal & Vision Connection
-              </h3>
-            </div>
+            <Compass className="w-4 h-4 text-[#235789]" />
+            <h3 className="font-semibold text-xs text-zinc-900 tracking-tight">
+              Why This Matters
+            </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
-            aria-label="Close lineage drawer"
+            className="p-1.5 text-zinc-400 hover:text-zinc-700 rounded-md hover:bg-zinc-100 transition-colors"
+            aria-label="Close drawer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Content Body */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {loading && (
-            <div className="flex flex-col items-center justify-center h-64 text-xs text-slate-500 space-y-3">
-              <div className="w-5 h-5 border-2 border-[#235789] border-t-transparent rounded-full animate-spin" />
-              <span>Connecting task to goals...</span>
+            <div className="flex flex-col items-center justify-center h-64 text-xs text-zinc-400 space-y-3">
+              <div className="w-4 h-4 border-2 border-[#235789] border-t-transparent rounded-full animate-spin" />
+              <span>Connecting action to purpose...</span>
             </div>
           )}
 
           {error && (
-            <div className="p-3.5 bg-red-50 border border-red-200 text-[#EE6352] text-xs rounded-lg">
+            <div className="p-3 bg-red-50 border border-red-200/80 text-[#EE6352] text-xs rounded-lg">
               {error}
             </div>
           )}
 
           {lineage && (
-            <div className="relative pl-7 space-y-5">
+            <div className="relative pl-7 space-y-4">
               {/* Vertical Spine Line */}
-              <div className="absolute left-[13px] top-3 bottom-5 w-0.5 bg-slate-200" />
+              {hasHigherContext && (
+                <div className="absolute left-[11px] top-3 bottom-5 w-[1.5px] bg-gradient-to-b from-[#235789] via-[#00A896] to-zinc-300" />
+              )}
 
-              {/* 1. Life Vision */}
-              <div className="relative">
-                <div className="absolute -left-[27px] top-2.5 w-6 h-6 rounded-full bg-[#235789] text-white flex items-center justify-center shadow-xs ring-4 ring-white">
-                  <Compass className="w-3.5 h-3.5" />
-                </div>
-                <div className="p-3.5 bg-white border border-slate-200/80 rounded-lg shadow-2xs space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-600">Life Vision</span>
-                    {lineage.domain && (
-                      <span
-                        className="px-2 py-0.5 rounded text-[10px] font-semibold text-white"
-                        style={{ backgroundColor: lineage.domain.color || "#235789" }}
-                      >
-                        {lineage.domain.name}
-                      </span>
-                    )}
-                  </div>
-                  <h4 className="font-semibold text-sm text-slate-900">{lineage.vision.title}</h4>
-                </div>
-              </div>
-
-              {/* 2. Strategic Goal */}
-              <div className="relative">
-                <div className="absolute -left-[27px] top-2.5 w-6 h-6 rounded-full bg-[#00A896] text-white flex items-center justify-center shadow-xs ring-4 ring-white">
-                  <Target className="w-3.5 h-3.5" />
-                </div>
-                <div className="p-3.5 bg-white border border-slate-200/80 rounded-lg shadow-2xs space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-600">Strategic Goal</span>
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-50 text-[#00A896]">
-                      {lineage.goal.status}
-                    </span>
-                  </div>
-                  <h4 className="font-semibold text-sm text-slate-900">{lineage.goal.title}</h4>
-                </div>
-              </div>
-
-              {/* 3. Milestone Checkpoint (if exists) */}
-              {lineage.milestone && (
+              {/* 1. Life Theme / Horizon (if exists) */}
+              {(lineage.theme || lineage.vision || lineage.domain) && (
                 <div className="relative">
-                  <div className="absolute -left-[27px] top-2.5 w-6 h-6 rounded-full bg-[#F4D35E] text-slate-900 flex items-center justify-center shadow-xs ring-4 ring-white">
-                    <Flag className="w-3.5 h-3.5" />
+                  <div className="absolute -left-[27px] top-2.5 w-5 h-5 rounded-full bg-[#235789] text-white flex items-center justify-center ring-4 ring-white shadow-2xs">
+                    <Sparkles className="w-2.5 h-2.5" />
                   </div>
-                  <div className="p-3.5 bg-white border border-slate-200/80 rounded-lg shadow-2xs space-y-1">
+                  <div className="p-3.5 bg-white border border-black/[0.06] rounded-lg shadow-2xs space-y-1">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-slate-600">Milestone Checkpoint</span>
-                      <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-amber-50 text-amber-800">
-                        {lineage.milestone.status}
-                      </span>
+                      <span className="font-medium text-zinc-400 text-[10px] uppercase tracking-wider">Horizon</span>
+                      {(lineage.theme?.color || lineage.domain?.color) && (
+                        <span
+                          className="px-1.5 py-0.2 rounded text-[10px] font-semibold text-white"
+                          style={{ backgroundColor: lineage.theme?.color || lineage.domain?.color || "#235789" }}
+                        >
+                          {lineage.theme?.name || lineage.domain?.name}
+                        </span>
+                      )}
                     </div>
-                    <h4 className="font-semibold text-sm text-slate-900">{lineage.milestone.title}</h4>
+                    <h4 className="font-semibold text-xs text-zinc-900 leading-snug">
+                      {lineage.theme?.vision_statement || lineage.vision?.title || lineage.theme?.name}
+                    </h4>
                   </div>
                 </div>
               )}
 
-              {/* 4. Finite Project (if exists) */}
+              {/* 2. Strategic Goal (if exists) */}
+              {lineage.goal && (
+                <div className="relative">
+                  <div className="absolute -left-[27px] top-2.5 w-5 h-5 rounded-full bg-[#00A896] text-white flex items-center justify-center ring-4 ring-white shadow-2xs">
+                    <Target className="w-2.5 h-2.5" />
+                  </div>
+                  <div className="p-3.5 bg-white border border-black/[0.06] rounded-lg shadow-2xs space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-medium text-zinc-400 text-[10px] uppercase tracking-wider">Outcome</span>
+                      <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded bg-[#00A896]/10 text-[#00A896] border border-[#00A896]/20">
+                        {lineage.goal.status}
+                      </span>
+                    </div>
+                    <h4 className="font-semibold text-xs text-zinc-900">{lineage.goal.title}</h4>
+                  </div>
+                </div>
+              )}
+
+              {/* 3. Finite Project (if exists) */}
               {lineage.project && (
                 <div className="relative">
-                  <div className="absolute -left-[27px] top-2.5 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-xs ring-4 ring-white">
-                    <FolderKanban className="w-3.5 h-3.5" />
+                  <div className="absolute -left-[27px] top-2.5 w-5 h-5 rounded-full bg-[#235789] text-white flex items-center justify-center ring-4 ring-white shadow-2xs">
+                    <FolderKanban className="w-2.5 h-2.5" />
                   </div>
-                  <div className="p-3.5 bg-white border border-slate-200/80 rounded-lg shadow-2xs space-y-1">
+                  <div className="p-3.5 bg-white border border-black/[0.06] rounded-lg shadow-2xs space-y-1">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-slate-600">Project</span>
-                      <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-blue-50 text-blue-700">
+                      <span className="font-medium text-zinc-400 text-[10px] uppercase tracking-wider">Project</span>
+                      <span className="text-[10px] font-medium px-1.5 py-0.2 rounded bg-[#235789]/10 text-[#235789]">
                         {lineage.project.status}
                       </span>
                     </div>
-                    <h4 className="font-semibold text-sm text-slate-900">{lineage.project.title}</h4>
+                    <h4 className="font-semibold text-xs text-zinc-900">{lineage.project.title}</h4>
                   </div>
                 </div>
               )}
 
-              {/* 5. Concrete Executable Task */}
+              {/* 4. Concrete Executable Task */}
               <div className="relative">
-                <div className="absolute -left-[27px] top-2.5 w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-xs ring-4 ring-white">
-                  <CheckSquare className="w-3.5 h-3.5" />
+                <div className={`absolute -left-[27px] top-2.5 w-5 h-5 rounded-full flex items-center justify-center ring-4 ring-white shadow-2xs ${
+                  lineage.task.status === "COMPLETED" ? "bg-[#00A896] text-white" : "bg-zinc-900 text-white"
+                }`}>
+                  <CheckSquare className="w-2.5 h-2.5" />
                 </div>
-                <div className="p-3.5 bg-slate-50/80 border border-slate-200 rounded-lg shadow-2xs space-y-1.5">
+                <div className="p-3.5 bg-zinc-50 border border-black/[0.06] rounded-lg space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-800">Action Task</span>
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-200 text-slate-700 tabular-nums">
-                      Weight: {lineage.task.weight}
+                    <span className="font-medium text-zinc-500 text-[10px] uppercase tracking-wider">Today&apos;s Action</span>
+                    <span className={`text-[10px] font-medium px-1.5 py-0.2 rounded ${
+                      lineage.task.status === "COMPLETED" ? "bg-[#00A896]/15 text-[#00A896]" : "bg-zinc-200/70 text-zinc-700"
+                    }`}>
+                      {lineage.task.status === "COMPLETED" ? "Completed" : "Ready"}
                     </span>
                   </div>
-                  <h4 className="font-semibold text-sm text-slate-900">{lineage.task.title}</h4>
+                  <h4 className="font-semibold text-xs text-zinc-900">{lineage.task.title}</h4>
 
-                  <div className="flex items-center gap-3 text-[11px] text-slate-500 pt-1.5 border-t border-slate-200/70">
-                    <span>Priority: <strong className="text-slate-700 font-semibold">{lineage.task.priority}</strong></span>
-                    {lineage.task.due_date && (
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-slate-400" />
-                        {lineage.task.due_date}
-                      </span>
-                    )}
-                  </div>
+                  {lineage.task.due_date && (
+                    <div className="flex items-center gap-1.5 text-[11px] text-zinc-400 pt-1 border-t border-black/[0.04]">
+                      <Calendar className="w-3 h-3 text-zinc-400" />
+                      <span>Due: {lineage.task.due_date}</span>
+                    </div>
+                  )}
                 </div>
               </div>
+
+              {/* Standalone card if no parent */}
+              {!hasHigherContext && (
+                <div className="p-3.5 bg-zinc-50 border border-black/[0.06] rounded-lg text-xs text-zinc-600 space-y-1">
+                  <p className="font-medium text-zinc-900 flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-[#00A896]" />
+                    Direct Action
+                  </p>
+                  <p className="text-[11px] text-zinc-500 leading-relaxed">
+                    This action stands on its own without needing a parent project. Complete it today with peace of mind.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="p-3.5 border-t border-slate-200/80 bg-slate-50/80 text-center shrink-0">
-          <p className="text-[11px] text-slate-500">
-            EaseLife Visible Lineage &bull; Every action grounded in direction.
+        <div className="p-4 border-t border-black/[0.05] bg-white text-center shrink-0">
+          <p className="text-[10px] text-zinc-400 tracking-wide uppercase">
+            EaseLife &bull; Structure Your Vision. Ease Your Days.
           </p>
         </div>
       </div>

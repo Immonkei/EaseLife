@@ -1,29 +1,36 @@
 import { createClient } from "@/lib/supabase/server";
 import { calculateHabitStreak, HabitStreakResult } from "./streak-service";
+import { HabitFrequency } from "@/types/domain";
 
 export interface HabitWithStreak {
   id: string;
+  goal_id?: string | null;
   title: string;
   description: string | null;
-  frequency: unknown;
-  status: string;
+  frequency: HabitFrequency;
+  status: any;
   currentStreak: number;
   longestStreak: number;
+  consistencyRate: number;
+  completedLast7Days: number;
   completedToday: boolean;
   completions: string[];
+  goals?: { id: string; title: string } | null;
 }
 
 interface RawHabitRecord {
   id: string;
+  goal_id?: string | null;
   title: string;
   description: string | null;
-  frequency: unknown;
+  frequency: HabitFrequency;
   status: string;
+  goals?: { id: string; title: string } | null;
   habit_completions?: Array<{ date: string }> | null;
 }
 
 /**
- * Retrieves all active habits for the authenticated user, complete with dynamic streak computation.
+ * Retrieves all active habits for the authenticated user, complete with dynamic streak & consistency computation.
  */
 export async function getUserHabits(referenceDateStr?: string): Promise<HabitWithStreak[]> {
   const todayStr = referenceDateStr || new Date().toISOString().split("T")[0];
@@ -33,12 +40,44 @@ export async function getUserHabits(referenceDateStr?: string): Promise<HabitWit
     .from("habits")
     .select(`
       *,
+      goals(id, title),
       habit_completions(date)
     `)
     .eq("status", "ACTIVE")
     .order("created_at", { ascending: true });
 
-  if (error) throw error;
+  if (error) {
+    // Fallback if goals relation not yet linked
+    const fallback = await supabase
+      .from("habits")
+      .select(`
+        *,
+        habit_completions(date)
+      `)
+      .eq("status", "ACTIVE")
+      .order("created_at", { ascending: true });
+
+    if (fallback.error) throw fallback.error;
+    const habitsFallback = (fallback.data || []) as unknown as RawHabitRecord[];
+    return habitsFallback.map((h) => {
+      const dates = (h.habit_completions || []).map((c) => c.date);
+      const streak: HabitStreakResult = calculateHabitStreak(dates, todayStr);
+      return {
+        id: h.id,
+        goal_id: h.goal_id,
+        title: h.title,
+        description: h.description,
+        frequency: h.frequency,
+        status: h.status,
+        currentStreak: streak.currentStreak,
+        longestStreak: streak.longestStreak,
+        consistencyRate: streak.consistencyRate,
+        completedLast7Days: streak.completedLast7Days,
+        completedToday: streak.completedToday,
+        completions: dates,
+      };
+    });
+  }
 
   const habits = (rawHabits || []) as unknown as RawHabitRecord[];
 
@@ -49,14 +88,18 @@ export async function getUserHabits(referenceDateStr?: string): Promise<HabitWit
 
     return {
       id: h.id,
+      goal_id: h.goal_id,
       title: h.title,
       description: h.description,
       frequency: h.frequency,
       status: h.status,
       currentStreak: streak.currentStreak,
       longestStreak: streak.longestStreak,
+      consistencyRate: streak.consistencyRate,
+      completedLast7Days: streak.completedLast7Days,
       completedToday: streak.completedToday,
       completions: dates,
+      goals: h.goals,
     };
   });
 }
@@ -110,6 +153,7 @@ export async function toggleHabitCompletion(habitId: string, dateStr?: string) {
 export async function createHabit(input: {
   title: string;
   description?: string | null;
+  goal_id?: string | null;
   frequency: { type: "daily" | "weekly" | "specific_days"; days?: number[] };
   goal_ids?: string[];
 }) {
@@ -118,10 +162,13 @@ export async function createHabit(input: {
 
   if (!user) throw new Error("Unauthorized");
 
+  const primaryGoalId = input.goal_id || (input.goal_ids && input.goal_ids.length > 0 ? input.goal_ids[0] : null);
+
   const { data: habit, error } = await supabase
     .from("habits")
     .insert({
       user_id: user.id,
+      goal_id: primaryGoalId,
       title: input.title,
       description: input.description,
       frequency: input.frequency,
@@ -131,17 +178,5 @@ export async function createHabit(input: {
     .single();
 
   if (error) throw error;
-
-  // Bind to goals if specified
-  if (input.goal_ids && input.goal_ids.length > 0) {
-    const bindings = input.goal_ids.map((gId) => ({
-      user_id: user.id,
-      goal_id: gId,
-      habit_id: habit.id,
-    }));
-
-    await supabase.from("goal_habits").insert(bindings);
-  }
-
   return habit;
 }

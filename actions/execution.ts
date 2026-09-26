@@ -18,6 +18,7 @@ export async function actionCreateTask(rawData: unknown): Promise<ActionResult<T
     revalidatePath("/dashboard");
     revalidatePath("/tasks");
     revalidatePath("/projects");
+    revalidatePath("/horizons");
     return actionSuccess(task as unknown as Task);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to create task";
@@ -33,6 +34,7 @@ export async function actionToggleTaskStatus(taskId: string, currentStatus: stri
     revalidatePath("/dashboard");
     revalidatePath("/tasks");
     revalidatePath("/projects");
+    revalidatePath("/horizons");
     return actionSuccess(task as unknown as Task);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed to toggle task";

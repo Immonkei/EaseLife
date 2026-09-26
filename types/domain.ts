@@ -1,15 +1,20 @@
 /**
  * EaseLife Core Domain Types
- * Clean decoupled view & entity interfaces.
+ * Option C: Calm Purposeful Alignment (Long-term -> Daily Connection)
  */
 
-export interface LifeDomain {
+export interface LifeTheme {
   id: string;
   name: string;
+  vision_statement?: string | null;
   color: string;
   icon?: string | null;
   position?: number;
+  created_at?: string;
 }
+
+// Backwards-compatible alias for existing imports
+export type LifeDomain = LifeTheme;
 
 export interface Vision {
   id: string;
@@ -24,16 +29,21 @@ export type GoalStatus = 'NOT_STARTED' | 'ACTIVE' | 'COMPLETED' | 'ON_HOLD' | 'A
 
 export interface Goal {
   id: string;
-  vision_id: string;
-  domain_id?: string | null;
+  theme_id?: string | null;
+  vision_id?: string | null; // Optional/legacy
+  domain_id?: string | null; // Optional/legacy
   parent_goal_id?: string | null;
   title: string;
   description?: string | null;
   status: GoalStatus;
   target_date?: string | null;
+  metric_target?: number | null;
+  metric_current?: number | null;
+  metric_unit?: string | null;
   created_at: string;
-  visions?: Vision | null;
-  life_domains?: LifeDomain | null;
+  life_themes?: LifeTheme | null;
+  visions?: { id: string; title: string } | null;
+  life_domains?: { id: string; name: string; color: string } | null;
 }
 
 export type MilestoneStatus = 'PENDING' | 'ACHIEVED' | 'MISSED';
@@ -51,7 +61,7 @@ export type ProjectStatus = 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' 
 
 export interface Project {
   id: string;
-  goal_id: string;
+  goal_id?: string | null; // Optional: projects can stand alone!
   milestone_id?: string | null;
   title: string;
   description?: string | null;
@@ -59,7 +69,7 @@ export interface Project {
   start_date?: string | null;
   target_date?: string | null;
   completed_at?: string | null;
-  goals?: { id: string; title: string } | null;
+  goals?: { id: string; title: string; theme_id?: string | null } | null;
   milestones?: { id: string; title: string } | null;
 }
 
@@ -68,14 +78,18 @@ export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
 
 export interface Task {
   id: string;
-  project_id?: string | null;
-  goal_id?: string | null;
+  project_id?: string | null; // Optional: tasks can stand alone!
+  goal_id?: string | null;    // Optional: tasks can stand alone!
   title: string;
   description?: string | null;
   status: TaskStatus;
   priority: TaskPriority;
-  weight: number;
+  weight?: number;
+  section?: string | null;    // Project phase / section
   due_date?: string | null;
+  is_focus?: boolean;
+  focus_date?: string | null;
+  focus_position?: 1 | 2 | 3 | null;
   completed_at?: string | null;
   projects?: { id: string; title: string } | null;
   goals?: { id: string; title: string } | null;
@@ -91,13 +105,16 @@ export interface HabitFrequency {
 
 export interface Habit {
   id: string;
+  goal_id?: string | null;    // Optional direct link to Goal
   title: string;
   description?: string | null;
   frequency: HabitFrequency;
   status: HabitStatus;
   currentStreak?: number;
   longestStreak?: number;
+  consistencyRate?: number;   // 0-100% rolling consistency
   completedToday?: boolean;
+  goals?: { id: string; title: string } | null;
 }
 
 export interface DailyFocusTask {

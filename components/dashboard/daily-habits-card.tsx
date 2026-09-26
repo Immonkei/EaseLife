@@ -1,4 +1,6 @@
-import { Check, Flame } from "lucide-react";
+"use client";
+
+import { Check } from "lucide-react";
 import { CreateEntityModal } from "@/components/planning/create-entity-modal";
 
 interface HabitItem {
@@ -7,6 +9,7 @@ interface HabitItem {
   completedToday: boolean;
   currentStreak: number;
   longestStreak: number;
+  consistencyRate?: number;
 }
 
 interface DailyHabitsCardProps {
@@ -25,74 +28,70 @@ export function DailyHabitsCard({
   onToggleHabit,
   onHabitCreated,
 }: DailyHabitsCardProps) {
-  const bulletColors = ["bg-[#60D394]", "bg-[#00A896]", "bg-[#F4D35E]", "bg-[#235789]"];
-
   return (
-    <section className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-2xs space-y-3">
-      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+    <section className="bg-white border border-black/[0.06] rounded-xl p-5 shadow-2xs space-y-3.5">
+      <div className="flex items-center justify-between border-b border-black/[0.04] pb-3">
         <div>
-          <h3 className="font-semibold text-sm text-slate-900">Daily Habits</h3>
-          <p className="text-[11px] text-slate-400 mt-0.5">
+          <h3 className="font-semibold text-xs text-zinc-900 tracking-tight">Daily Practices</h3>
+          <p className="text-[11px] text-zinc-400 mt-0.5">
             {stats.habitsDone} of {stats.habitsTotal} completed today
           </p>
         </div>
-        <CreateEntityModal defaultTab="habit" buttonLabel="+ Habit" onSuccess={onHabitCreated} />
+        <CreateEntityModal defaultTab="habit" buttonLabel="Practice" onSuccess={onHabitCreated} />
       </div>
 
       {habits && habits.length > 0 ? (
-        <div className="space-y-2">
-          {habits.map((h, idx) => (
+        <div className="space-y-1.5">
+          {habits.map((h) => (
             <div
               key={h.id}
               onClick={() => onToggleHabit(h.id)}
-              className={`p-3 rounded-lg border flex items-center justify-between cursor-pointer transition-colors ${
+              className={`p-2.5 rounded-lg border flex items-center justify-between cursor-pointer transition-all ${
                 h.completedToday
-                  ? "bg-teal-50/60 border-teal-200/80"
-                  : "bg-white border-slate-200/80 hover:border-slate-300"
+                  ? "bg-zinc-50/60 border-black/[0.04] text-zinc-400"
+                  : "bg-white border-black/[0.06] hover:border-black/[0.12]"
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
                 <div
-                  className={`w-4.5 h-4.5 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
+                  className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
                     h.completedToday
                       ? "bg-[#00A896] border-[#00A896] text-white"
-                      : "border-slate-300 bg-white"
+                      : "border-zinc-300 bg-white"
                   }`}
                 >
                   {h.completedToday && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                 </div>
 
-                <div className="flex items-center gap-2 min-w-0">
-                  <span
-                    className={`w-2 h-2 rounded-xs shrink-0 ${
-                      bulletColors[idx % bulletColors.length]
-                    }`}
-                  />
-                  <span className="text-xs font-medium text-slate-800 truncate">
-                    {h.title}
-                  </span>
-                </div>
+                <span
+                  className={`text-xs font-medium truncate ${
+                    h.completedToday ? "line-through text-zinc-400" : "text-zinc-800"
+                  }`}
+                >
+                  {h.title}
+                </span>
               </div>
 
               <span
-                className={`text-[11px] font-medium px-2 py-0.5 rounded flex items-center gap-1 tabular-nums shrink-0 ${
-                  h.currentStreak > 0
-                    ? "bg-amber-50 text-amber-800 border border-amber-100"
-                    : "bg-slate-100 text-slate-500"
+                className={`text-[10px] font-semibold px-2 py-0.5 rounded tabular-nums shrink-0 ${
+                  h.completedToday
+                    ? "bg-[#00A896]/15 text-[#00A896]"
+                    : h.consistencyRate !== undefined && h.consistencyRate > 0
+                    ? "bg-[#00A896]/10 text-[#00A896] border border-[#00A896]/20"
+                    : "bg-zinc-100 text-zinc-400"
                 }`}
               >
-                {h.currentStreak > 0 && (
-                  <Flame className="w-3 h-3 text-amber-500 fill-amber-500" />
-                )}
-                {h.currentStreak}d
+                {h.consistencyRate !== undefined && h.consistencyRate > 0
+                  ? `${h.consistencyRate}%`
+                  : `${h.currentStreak}d`}
               </span>
             </div>
           ))}
         </div>
       ) : (
-        <div className="py-6 text-center text-xs text-slate-400 space-y-2">
-          <p>No habits added yet.</p>
-          <CreateEntityModal defaultTab="habit" buttonLabel="Add your first habit" onSuccess={onHabitCreated} />
+        <div className="py-6 text-center text-xs text-zinc-400 space-y-2">
+          <p>No daily practices configured yet.</p>
+          <CreateEntityModal defaultTab="habit" buttonLabel="Add practice" onSuccess={onHabitCreated} />
         </div>
       )}
     </section>
